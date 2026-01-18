@@ -21,7 +21,7 @@ export default function LandingPage() {
       setUploadProgress('Analyzing outfit with AI...');
 
       // Poll for results
-      const analysisResult = await pollAnalysis(
+      await pollAnalysis(
         uploadResponse.uploadId,
         (status) => {
           if (status === 'processing') {
@@ -78,7 +78,10 @@ export default function LandingPage() {
               </p>
 
               <button
-                onClick={() => document.querySelector('input[type="file"]')?.click()}
+                onClick={() => {
+                  const input = document.querySelector('input[type="file"]') as HTMLInputElement | null;
+                  input?.click();
+                }}
                 disabled={isUploading}
                 className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed animate-fade-in-up animation-delay-400 hover:scale-105 transition-transform duration-300"
               >
