@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { Product } from '../services/api';
-import { ExternalLink, Tag } from 'lucide-react';
+import { ExternalLink, Tag, Image } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
@@ -7,6 +8,8 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, isCheapest = false }: ProductCardProps) {
+  const [imageError, setImageError] = useState(false);
+
   return (
     <div className={`bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow relative ${isCheapest ? 'ring-2 ring-green-500' : ''}`}>
       {isCheapest && (
@@ -17,14 +20,19 @@ export default function ProductCard({ product, isCheapest = false }: ProductCard
       )}
       
       <div className="aspect-square bg-gray-100 relative overflow-hidden">
-        <img
-          src={product.imageUrl}
-          alt={product.name}
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x400?text=No+Image';
-          }}
-        />
+        {!imageError ? (
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            className="w-full h-full object-cover"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gray-200 text-gray-400">
+            <Image size={48} className="mb-2" />
+            <span className="text-xs text-center px-2">No Image</span>
+          </div>
+        )}
       </div>
       
       <div className="p-4">
