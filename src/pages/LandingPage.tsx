@@ -25,7 +25,7 @@ export default function LandingPage() {
         uploadResponse.uploadId,
         (status) => {
           if (status === 'processing') {
-            setUploadProgress('Processing image...');
+            setUploadProgress('Processing image... Please Wait');
           }
         }
       );
