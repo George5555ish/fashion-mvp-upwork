@@ -11,43 +11,30 @@ export default function Header() {
             GRAPESLAB
           </Link>
 
-          {/* Navigation - Hidden on mobile, shown on desktop */}
           <nav className="hidden md:flex items-center space-x-2">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="glassmorphic-nav text-sm font-medium text-gray-700 hover:text-gray-900 transition-all duration-300"
             >
-              New Arrival
+              Home
             </Link>
-            <Link 
-              to="/" 
+            <Link
+              to="/app"
               className="glassmorphic-nav text-sm font-medium text-gray-700 hover:text-gray-900 transition-all duration-300"
             >
-              Women
+              Analyzer
             </Link>
-            <Link 
-              to="/" 
+            <Link
+              to="/about"
               className="glassmorphic-nav text-sm font-medium text-gray-700 hover:text-gray-900 transition-all duration-300"
             >
-              Men
+              About
             </Link>
-            <Link 
-              to="/" 
+            <Link
+              to="/privacy"
               className="glassmorphic-nav text-sm font-medium text-gray-700 hover:text-gray-900 transition-all duration-300"
             >
-              Collections
-            </Link>
-            <Link 
-              to="/" 
-              className="glassmorphic-nav text-sm font-medium text-gray-700 hover:text-gray-900 transition-all duration-300"
-            >
-              Sale
-            </Link>
-            <Link 
-              to="/" 
-              className="glassmorphic-nav text-sm font-medium text-gray-700 hover:text-gray-900 transition-all duration-300"
-            >
-              About Us
+              Privacy
             </Link>
           </nav>
 

@@ -14,7 +14,7 @@ export default function ResultsPage() {
 
   useEffect(() => {
     if (!uploadId) {
-      navigate('/');
+      navigate('/app');
       return;
     }
 
@@ -94,7 +94,7 @@ export default function ResultsPage() {
               {error || analysis?.error || 'Failed to analyze outfit'}
             </p>
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/app')}
               className="btn-primary"
             >
               Try Again
@@ -216,7 +216,7 @@ export default function ResultsPage() {
         {/* Back Button */}
         <div className="text-center">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/app')}
             className="btn-primary"
           >
             Analyze Another Outfit
