@@ -45,7 +45,7 @@ export default function HomePage() {
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium mb-6">
               <Sparkles size={14} />
-              AI-powered fashion discovery
+              {siteConfig.tagline}
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
               Turn any outfit photo into a{' '}

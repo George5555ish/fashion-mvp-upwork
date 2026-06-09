@@ -59,10 +59,10 @@ export default function AnalyzePage() {
             <div className="text-center lg:text-left">
               <div className="mb-6 animate-fade-in-up">
                 <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 mb-2 animate-slide-in-left">
-                  FASHION
+                  SNAP
                 </h1>
                 <h2 className="text-4xl lg:text-6xl font-light text-gray-500 animate-slide-in-right">
-                  DEFINES YOU
+                  FASH
                 </h2>
               </div>
               
