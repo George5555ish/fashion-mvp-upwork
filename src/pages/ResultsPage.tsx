@@ -54,6 +54,15 @@ export default function ResultsPage() {
     fetchAnalysis();
   }, [uploadId, navigate]);
 
+  const getItemLabel = (item: DetectedItem) => {
+    const color = item.color?.trim();
+    const category = item.category?.trim();
+    if (color && category) {
+      return `${color} ${category}`;
+    }
+    return category || 'this item';
+  };
+
   // Generate detection summary message (must be before conditional returns)
   const detectionMessage = useMemo(() => {
     if (!analysis?.detectedItems || analysis.detectedItems.length === 0) {
@@ -179,8 +188,16 @@ export default function ResultsPage() {
 
                     {/* Similar Products - Right Side */}
                     <div className="lg:col-span-2">
+                      {item.ebayResultCount === 0 && (
+                        <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                          {item.matchedProducts?.length > 0
+                            ? `0 products for ${getItemLabel(item)}. Here are some alternatives from our catalog.`
+                            : `0 products for ${getItemLabel(item)}.`}
+                        </div>
+                      )}
+
                       <h4 className="text-lg font-medium text-gray-900 mb-4">
-                        Similar Products
+                        {item.matchSource === 'ebay' ? 'Similar Products on eBay' : 'Similar Products'}
                         {cheapestProduct && (
                           <span className="ml-2 text-sm font-normal text-gray-500">
                             (Cheapest: ${cheapestProduct.price.toFixed(2)})

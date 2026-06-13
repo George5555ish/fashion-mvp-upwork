@@ -42,6 +42,8 @@ export interface DetectedItem {
   style: string;
   description: string;
   matchedProducts: Product[];
+  matchSource?: 'ebay' | 'seed';
+  ebayResultCount?: number | null;
 }
 
 export interface Product {
@@ -57,6 +59,7 @@ export interface Product {
   description: string;
   color: string;
   style: string;
+  source?: 'seed' | 'ebay';
 }
 
 export interface AnalysisResponse {
