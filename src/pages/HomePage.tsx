@@ -119,7 +119,7 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              {['Save to Albums', 'Closet Bestie', 'Outfit Builder', 'Shop My Looks'].map((item) => (
+              {['Save to Albums', 'Closet Bestie', 'Outfit Builder', 'FindThatFit'].map((item) => (
                 <div
                   key={item}
                   className="flex items-center gap-3 p-4 rounded-xl bg-white/10 border border-white/10"

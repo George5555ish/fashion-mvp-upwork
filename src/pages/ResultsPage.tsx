@@ -212,6 +212,9 @@ export default function ResultsPage() {
                               key={product._id}
                               product={product}
                               isCheapest={cheapestProduct?._id === product._id}
+                              savedFromUploadId={uploadId}
+                              detectedCategory={item.category}
+                              detectedColor={item.color}
                             />
                           ))}
                         </div>
