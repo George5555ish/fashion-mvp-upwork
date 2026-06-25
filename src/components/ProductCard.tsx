@@ -53,12 +53,15 @@ export default function ProductCard({
           <h3 className="font-medium text-gray-900 mb-1 line-clamp-2 text-sm">
             {product.name}
           </h3>
-          <p className="text-gray-500 text-xs mb-2">
-            {product.brand}
-            {product.source === 'ebay' && (
-              <span className="ml-1 text-gray-400">· via eBay</span>
-            )}
-          </p>
+        <p className="text-gray-500 text-xs mb-2">
+          {product.brand}
+          {product.source === 'ebay' && (
+            <span className="ml-1 text-gray-400">· via eBay</span>
+          )}
+          {product.source === 'shopping' && (
+            <span className="ml-1 text-gray-400">· Google Shopping</span>
+          )}
+        </p>
           <p className={`text-lg font-bold mb-3 ${isCheapest ? 'text-green-600' : 'text-gray-900'}`}>
             ${product.price.toFixed(2)}
           </p>

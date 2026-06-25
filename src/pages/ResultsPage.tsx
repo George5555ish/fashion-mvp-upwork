@@ -119,10 +119,35 @@ export default function ResultsPage() {
   // Find cheapest product for each detected item
   const getCheapestProduct = (products: Product[]): Product | null => {
     if (!products || products.length === 0) return null;
-    return products.reduce((cheapest, current) => 
+    return products.reduce((cheapest, current) =>
       current.price < cheapest.price ? current : cheapest
     );
   };
+
+  const groupProductsBySource = (products: Product[] = []) => ({
+    ebay: products.filter((product) => product.source === 'ebay'),
+    shopping: products.filter((product) => product.source === 'shopping'),
+    seed: products.filter((product) => !product.source || product.source === 'seed'),
+  });
+
+  const renderProductGrid = (
+    products: Product[],
+    cheapestProduct: Product | null,
+    item: DetectedItem
+  ) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {products.map((product) => (
+        <ProductCard
+          key={product._id}
+          product={product}
+          isCheapest={cheapestProduct?._id === product._id}
+          savedFromUploadId={uploadId}
+          detectedCategory={item.category}
+          detectedColor={item.color}
+        />
+      ))}
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -146,9 +171,17 @@ export default function ResultsPage() {
         {analysis.detectedItems && analysis.detectedItems.length > 0 ? (
           <div className="space-y-12">
             {analysis.detectedItems.map((item: DetectedItem) => {
-              const cheapestProduct = item.matchedProducts && item.matchedProducts.length > 0
-                ? getCheapestProduct(item.matchedProducts)
+              const groupedProducts = groupProductsBySource(item.matchedProducts);
+              const retailerProducts = [...groupedProducts.ebay, ...groupedProducts.shopping];
+              const displayProducts = retailerProducts.length > 0
+                ? retailerProducts
+                : groupedProducts.seed;
+              const cheapestProduct = displayProducts.length > 0
+                ? getCheapestProduct(displayProducts)
                 : null;
+              const hasEbay = groupedProducts.ebay.length > 0;
+              const hasShopping = groupedProducts.shopping.length > 0;
+              const usingSeedFallback = item.matchSource === 'seed' && groupedProducts.seed.length > 0;
 
               return (
                 <div key={item.itemId} className="bg-white rounded-lg shadow-sm p-6 animate-fade-in-up">
@@ -188,37 +221,51 @@ export default function ResultsPage() {
 
                     {/* Similar Products - Right Side */}
                     <div className="lg:col-span-2">
-                      {item.ebayResultCount === 0 && (
+                      {usingSeedFallback && (
                         <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-                          {item.matchedProducts?.length > 0
-                            ? `0 products for ${getItemLabel(item)}. Here are some alternatives from our catalog.`
-                            : `0 products for ${getItemLabel(item)}.`}
+                          {`0 products for ${getItemLabel(item)}. Here are some alternatives from our catalog.`}
                         </div>
                       )}
 
-                      <h4 className="text-lg font-medium text-gray-900 mb-4">
-                        {item.matchSource === 'ebay' ? 'Similar Products on eBay' : 'Similar Products'}
-                        {cheapestProduct && (
-                          <span className="ml-2 text-sm font-normal text-gray-500">
-                            (Cheapest: ${cheapestProduct.price.toFixed(2)})
-                          </span>
-                        )}
-                      </h4>
-                      
-                      {item.matchedProducts && item.matchedProducts.length > 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {item.matchedProducts.map((product) => (
-                            <ProductCard
-                              key={product._id}
-                              product={product}
-                              isCheapest={cheapestProduct?._id === product._id}
-                              savedFromUploadId={uploadId}
-                              detectedCategory={item.category}
-                              detectedColor={item.color}
-                            />
-                          ))}
+                      {displayProducts.length > 0 && (
+                        <h4 className="text-lg font-medium text-gray-900 mb-4">
+                          Similar Products
+                          {cheapestProduct && (
+                            <span className="ml-2 text-sm font-normal text-gray-500">
+                              (Cheapest: ${cheapestProduct.price.toFixed(2)})
+                            </span>
+                          )}
+                        </h4>
+                      )}
+
+                      {hasEbay && (
+                        <div className="mb-8">
+                          <h5 className="text-sm font-semibold text-gray-800 mb-3">
+                            On eBay ({groupedProducts.ebay.length})
+                          </h5>
+                          {renderProductGrid(groupedProducts.ebay, cheapestProduct, item)}
                         </div>
-                      ) : (
+                      )}
+
+                      {hasShopping && (
+                        <div className={hasEbay ? 'mb-8' : 'mb-4'}>
+                          <h5 className="text-sm font-semibold text-gray-800 mb-3">
+                            More stores ({groupedProducts.shopping.length})
+                          </h5>
+                          {renderProductGrid(groupedProducts.shopping, cheapestProduct, item)}
+                        </div>
+                      )}
+
+                      {usingSeedFallback && (
+                        <div>
+                          <h5 className="text-sm font-semibold text-gray-800 mb-3">
+                            Catalog alternatives ({groupedProducts.seed.length})
+                          </h5>
+                          {renderProductGrid(groupedProducts.seed, cheapestProduct, item)}
+                        </div>
+                      )}
+
+                      {displayProducts.length === 0 && (
                         <p className="text-gray-500 text-sm">No similar products found</p>
                       )}
                     </div>
