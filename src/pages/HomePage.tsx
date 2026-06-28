@@ -56,7 +56,7 @@ const collections = [
   {
     name: 'Violet Puff Coat',
     price: 300,
-    image: 'https://images.unsplash.com/photo-1548624311-4c0d745e4c8a?w=500&h=700&fit=crop',
+    image: '/collection-violet-coat.jpg',
   },
   {
     name: 'Leather Edge Jacket',
@@ -81,7 +81,7 @@ const collections = [
 ];
 
 const galleryImages = {
-  hero: 'https://images.unsplash.com/photo-1483985988350-763728e1935b?w=900&h=600&fit=crop',
+  hero: '/gallery-editorial.jpg',
   portrait1: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=500&h=650&fit=crop',
   portrait2: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&h=650&fit=crop',
   cinematic: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&h=500&fit=crop',
