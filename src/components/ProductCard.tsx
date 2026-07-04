@@ -25,9 +25,9 @@ export default function ProductCard({
 
   return (
     <>
-      <div className={`bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow relative ${isCheapest ? 'ring-2 ring-green-500' : ''}`}>
+      <div className={`bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow relative ${isCheapest ? 'ring-2 ring-pink-500' : ''}`}>
         {isCheapest && (
-          <div className="absolute top-2 right-2 z-10 bg-green-500 text-white px-3 py-1 rounded-full flex items-center space-x-1 text-xs font-semibold shadow-lg">
+          <div className="absolute top-2 right-2 z-10 bg-pink-500 text-white px-3 py-1 rounded-full flex items-center space-x-1 text-xs font-semibold shadow-lg">
             <Tag size={12} />
             <span>Cheapest</span>
           </div>
@@ -62,7 +62,7 @@ export default function ProductCard({
             <span className="ml-1 text-gray-400">· Google Shopping</span>
           )}
         </p>
-          <p className={`text-lg font-bold mb-3 ${isCheapest ? 'text-green-600' : 'text-gray-900'}`}>
+          <p className={`text-lg font-bold mb-3 ${isCheapest ? 'text-pink-600' : 'text-gray-900'}`}>
             ${product.price.toFixed(2)}
           </p>
 
@@ -73,7 +73,7 @@ export default function ProductCard({
               rel="noopener noreferrer"
               className={`w-full flex items-center justify-center space-x-2 text-sm py-2 rounded-lg font-medium transition-colors ${
                 isCheapest
-                  ? 'bg-green-500 text-white hover:bg-green-600'
+                  ? 'bg-pink-500 text-white hover:bg-pink-600'
                   : 'btn-primary'
               }`}
             >
