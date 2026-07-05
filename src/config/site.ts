@@ -1,5 +1,6 @@
 export const siteConfig = {
   name: 'OutFind',
+  logoUrl: '/outfind-logo.png',
   tagline: 'Find any outfit. Shop every piece.',
   description:
     'Upload outfit photos and discover clothing items with AI. Find similar styles and affordable dupes with curated shopping links.',

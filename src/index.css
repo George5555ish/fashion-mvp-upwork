@@ -46,11 +46,11 @@
   }
 
   .neuro-btn-active {
-    @apply bg-surface shadow-neuro-inset ring-2 ring-sky text-sky;
+    @apply bg-surface shadow-neuro-inset ring-2 ring-brand text-brand;
   }
 
   .landing-bg {
-    background: linear-gradient(180deg, #E8EBF0 0%, #DDE1E8 40%, #E4E7EC 100%);
+    background: linear-gradient(180deg, #FAF7F4 0%, #F0E8DF 40%, #F5F0EB 100%);
   }
 }
 

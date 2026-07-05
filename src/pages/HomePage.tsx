@@ -12,24 +12,25 @@ import {
 } from 'lucide-react';
 import LandingHeader from '../components/landing/LandingHeader';
 import LandingFooter from '../components/landing/LandingFooter';
+import PublishedLooksSection from '../components/landing/PublishedLooksSection';
 import { siteConfig } from '../config/site';
 
 const heroSlides = [
   {
-    src: '/outfind-hero-model.png',
-    alt: 'Model in metallic silver puffer jacket',
+    src: '/hero-dress.png',
+    alt: 'Evening look with floral black dress',
   },
   {
-    src: '/outfind-hero-dress.png',
-    alt: 'Model in emerald green dress',
+    src: '/hero-casual.png',
+    alt: 'Casual street style at night',
   },
   {
-    src: '/outfind-hero-casual.png',
-    alt: 'Model in coral casual streetwear',
+    src: '/hero-evening.png',
+    alt: 'Formal evening dresses with embellished clutches',
   },
   {
-    src: '/outfind-hero-corporate.png',
-    alt: 'Model in burgundy corporate power suit',
+    src: '/hero-accessory.png',
+    alt: 'Espresso martini beaded handbag',
   },
 ];
 
@@ -47,7 +48,7 @@ const sizes = ['S', 'Medium', 'L', 'XL', '2XL'] as const;
 const colors = [
   { name: 'Black', hex: '#1A1A1A' },
   { name: 'Pink', hex: '#F4A4C0' },
-  { name: 'Sky', hex: '#4DA3FF' },
+  { name: 'Brown', hex: '#8B5E3C' },
   { name: 'Grey', hex: '#9CA3AF' },
   { name: 'Navy', hex: '#1E3A5F' },
 ];
@@ -112,16 +113,28 @@ export default function HomePage() {
       <LandingHeader />
 
       {/* Hero — full-bleed carousel */}
-      <section className="relative h-screen w-full overflow-hidden">
+      <section className="relative h-screen w-full overflow-hidden landing-bg">
         {heroSlides.map((slide, index) => (
-          <img
+          <div
             key={slide.src}
-            src={slide.src}
-            alt={slide.alt}
-            className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 ease-in-out ${
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
               index === activeSlide ? 'opacity-100' : 'opacity-0'
             }`}
-          />
+          >
+            {/* Blurred fill background */}
+            <img
+              src={slide.src}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover object-center scale-110 blur-2xl brightness-90"
+            />
+            {/* Fully-visible foreground image */}
+            <img
+              src={slide.src}
+              alt={slide.alt}
+              className="absolute inset-0 w-full h-full object-contain object-center drop-shadow-2xl"
+            />
+          </div>
         ))}
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-black/20 pointer-events-none" />
@@ -140,7 +153,7 @@ export default function HomePage() {
                 <span
                   className={`block w-1 rounded-full transition-all duration-500 ${
                     index === activeSlide
-                      ? 'h-14 bg-sky shadow-[0_0_12px_rgba(77,163,255,0.8)]'
+                      ? 'h-14 bg-brand shadow-[0_0_12px_rgba(139,94,60,0.8)]'
                       : 'h-6 bg-white/35 group-hover:bg-white/55'
                   }`}
                 />
@@ -153,14 +166,8 @@ export default function HomePage() {
         <div className="absolute left-12 sm:left-20 lg:left-28 top-1/2 -translate-y-1/2 z-20 max-w-xs sm:max-w-sm lg:max-w-md">
           <h1 className="text-2xl sm:text-3xl lg:text-5xl font-semibold text-white leading-snug drop-shadow-lg">
             Take your style to the{' '}
-            <span className="text-sky-light">beautiful skies.</span>
+            <span className="text-brand-light">beautiful skies.</span>
           </h1>
-        </div>
-
-        {/* Decorative 88 + star — top right */}
-        <div className="absolute right-6 sm:right-12 lg:right-20 top-28 sm:top-32 z-20 flex items-start gap-2">
-          <span className="text-5xl sm:text-7xl font-light text-white/30 leading-none drop-shadow">88</span>
-          <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-sky mt-2 drop-shadow" strokeWidth={1.5} />
         </div>
 
         {/* View Live Style — glass circle right */}
@@ -168,7 +175,7 @@ export default function HomePage() {
           to="/findthatfit"
           className="absolute right-6 sm:right-12 lg:right-20 bottom-36 sm:bottom-44 z-20 glass rounded-full w-32 h-32 sm:w-36 sm:h-36 flex flex-col items-center justify-center text-center gap-2 hover:bg-white/40 transition-all group"
         >
-          <Camera size={24} className="text-sky group-hover:scale-110 transition-transform" />
+          <Camera size={24} className="text-brand group-hover:scale-110 transition-transform" />
           <span className="text-sm sm:text-base font-medium text-gray-900 leading-tight px-3">
             View Live Style
           </span>
@@ -182,7 +189,7 @@ export default function HomePage() {
               type="button"
               className="glass-pill-dark px-6 sm:px-8 py-3.5 sm:py-4 flex items-center gap-3 text-base sm:text-lg font-medium hover:bg-black/70 transition-colors"
             >
-              <Icon size={20} className="text-sky-light shrink-0" />
+              <Icon size={20} className="text-brand-light shrink-0" />
               {label}
             </button>
           ))}
@@ -238,7 +245,7 @@ export default function HomePage() {
                     onClick={() => setSelectedColor(color.name)}
                     title={color.name}
                     className={`neuro-btn w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center ${
-                      selectedColor === color.name ? 'ring-2 ring-sky ring-offset-2' : ''
+                      selectedColor === color.name ? 'ring-2 ring-brand ring-offset-2' : ''
                     }`}
                   >
                     <span
@@ -262,7 +269,7 @@ export default function HomePage() {
 
               <Link
                 to="/app"
-                className="flex-1 max-w-md flex items-center justify-center gap-2 bg-sky hover:bg-sky-dark text-white font-medium py-4 px-6 rounded-2xl transition-colors shadow-lg shadow-sky/30"
+                className="flex-1 max-w-md flex items-center justify-center gap-2 bg-brand hover:bg-brand-dark text-white font-medium py-4 px-6 rounded-2xl transition-colors shadow-lg shadow-brand/30"
               >
                 <ShoppingBag size={20} />
                 Add to cart — $199
@@ -271,6 +278,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <PublishedLooksSection />
 
       {/* Our Collections */}
       <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-10 overflow-hidden">
@@ -304,7 +313,7 @@ export default function HomePage() {
                   <p className="font-medium text-gray-800 text-sm truncate">{item.name}</p>
                   <Link
                     to="/findthatfit"
-                    className="shrink-0 neuro-btn px-4 py-2 text-xs font-medium text-gray-700 hover:text-sky"
+                    className="shrink-0 neuro-btn px-4 py-2 text-xs font-medium text-gray-700 hover:text-brand"
                   >
                     View
                   </Link>
@@ -373,7 +382,7 @@ export default function HomePage() {
             />
             <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center px-6">
               <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="w-7 h-7 text-sky" strokeWidth={1.5} />
+                <Sparkles className="w-7 h-7 text-brand-light" strokeWidth={1.5} />
                 <span className="text-2xl sm:text-3xl font-semibold text-white">{siteConfig.name}</span>
               </div>
               <p className="text-sm sm:text-base text-gray-200 max-w-md">

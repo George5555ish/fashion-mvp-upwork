@@ -4,9 +4,8 @@ import {
   User,
   ShoppingBag,
   Menu,
-  Sparkles,
 } from 'lucide-react';
-import { siteConfig } from '../../config/site';
+import BrandLogo from '../BrandLogo';
 import { useAuth } from '../../contexts/AuthContext';
 
 const navLinks = [
@@ -21,12 +20,7 @@ export default function LandingHeader() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-10 pt-4">
       <div className="glass rounded-2xl px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
-        <Link to="/" className="flex items-center gap-2 shrink-0">
-          <Sparkles className="w-6 h-6 text-sky" strokeWidth={1.5} />
-          <span className="text-lg font-semibold text-gray-900 tracking-tight">
-            {siteConfig.name}
-          </span>
-        </Link>
+        <BrandLogo />
 
         <nav className="hidden md:flex items-center gap-1 lg:gap-2">
           {navLinks.map((link) => (

@@ -38,7 +38,7 @@ function FooterColumn({ title, links }: { title: string; links: { to: string; la
           <li key={link.to}>
             <Link
               to={link.to}
-              className="text-sm text-gray-400 hover:text-sky-light transition-colors"
+              className="text-sm text-gray-400 hover:text-brand-light transition-colors"
             >
               {link.label}
             </Link>
@@ -51,12 +51,12 @@ function FooterColumn({ title, links }: { title: string; links: { to: string; la
 
 export default function LandingFooter() {
   return (
-    <footer className="bg-[#1A1D21] text-white">
+    <footer className="bg-[#2C1810] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <Sparkles className="w-6 h-6 text-sky" strokeWidth={1.5} />
+              <Sparkles className="w-6 h-6 text-brand-light" strokeWidth={1.5} />
               <span className="text-xl font-semibold">{siteConfig.name}</span>
             </Link>
             <p className="text-sm text-gray-400 max-w-sm mb-6 leading-relaxed">
@@ -68,7 +68,7 @@ export default function LandingFooter() {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-sky hover:bg-sky/20 transition-colors"
+                  className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-brand-light hover:bg-brand/20 transition-colors"
                 >
                   <Icon size={16} />
                 </a>
