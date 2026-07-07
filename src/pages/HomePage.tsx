@@ -1,14 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
+  ArrowRight,
+  Briefcase,
   Camera,
   ChevronLeft,
   ChevronRight,
+  Heart,
+  Music,
+  Palmtree,
   ShoppingBag,
   Sparkles,
-  Wind,
-  Zap,
-  Star,
+  Sun,
 } from 'lucide-react';
 import LandingHeader from '../components/landing/LandingHeader';
 import LandingFooter from '../components/landing/LandingFooter';
@@ -36,12 +39,13 @@ const heroSlides = [
 
 const HERO_INTERVAL_MS = 5000;
 
-const heroTags = [
-  { icon: Sparkles, label: 'Style' },
-  { icon: Zap, label: 'New' },
-  { icon: Wind, label: 'Sky' },
-  { icon: Star, label: 'Modern' },
-  { icon: Sparkles, label: 'Super' },
+const styleCategories = [
+  { icon: ShoppingBag, label: 'Old Money' },
+  { icon: Music, label: 'Minimal' },
+  { icon: Sun, label: 'Summer' },
+  { icon: Briefcase, label: 'Office' },
+  { icon: Palmtree, label: 'Vacation' },
+  { icon: Heart, label: 'Date Night' },
 ];
 
 const sizes = ['S', 'Medium', 'L', 'XL', '2XL'] as const;
@@ -92,6 +96,7 @@ export default function HomePage() {
   const [selectedSize, setSelectedSize] = useState<(typeof sizes)[number]>('Medium');
   const [selectedColor, setSelectedColor] = useState(colors[0].name);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [activeCategory, setActiveCategory] = useState(styleCategories[0].label);
   const collectionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -115,26 +120,14 @@ export default function HomePage() {
       {/* Hero — full-bleed carousel */}
       <section className="relative h-screen w-full overflow-hidden landing-bg">
         {heroSlides.map((slide, index) => (
-          <div
+          <img
             key={slide.src}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+            src={slide.src}
+            alt={slide.alt}
+            className={`absolute inset-0 w-full h-full object-cover object-[center_70%] transition-opacity duration-1000 ease-in-out ${
               index === activeSlide ? 'opacity-100' : 'opacity-0'
             }`}
-          >
-            {/* Blurred fill background */}
-            <img
-              src={slide.src}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover object-center scale-110 blur-2xl brightness-90"
-            />
-            {/* Fully-visible foreground image */}
-            <img
-              src={slide.src}
-              alt={slide.alt}
-              className="absolute inset-0 w-full h-full object-contain object-center drop-shadow-2xl"
-            />
-          </div>
+          />
         ))}
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-black/20 pointer-events-none" />
@@ -163,36 +156,56 @@ export default function HomePage() {
         </div>
 
         {/* Hero headline — left */}
-        <div className="absolute left-12 sm:left-20 lg:left-28 top-1/2 -translate-y-1/2 z-20 max-w-xs sm:max-w-sm lg:max-w-md">
-          <h1 className="text-2xl sm:text-3xl lg:text-5xl font-semibold text-white leading-snug drop-shadow-lg">
-            Take your style to the{' '}
-            <span className="text-brand-light">beautiful skies.</span>
+        <div className="absolute left-12 sm:left-20 lg:left-28 top-1/2 -translate-y-1/2 z-20 max-w-md lg:max-w-xl">
+          <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl xl:text-6xl text-white leading-tight drop-shadow-lg">
+            Your personal stylist.
+            <br />
+            <span className="italic text-brand-light">Your digital Closet.</span>
           </h1>
+          <p className="mt-4 sm:mt-6 text-sm sm:text-base lg:text-lg text-white/90 leading-relaxed drop-shadow max-w-md">
+            Find outfits, discover dupes, organize your wardrobe, and shop every look—all in one place.
+          </p>
+          <Link
+            to="/app"
+            className="mt-6 sm:mt-8 inline-flex items-center gap-2 glass-pill-dark px-6 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg font-medium hover:bg-black/70 transition-colors"
+          >
+            Try OutFind
+            <ArrowRight size={20} />
+          </Link>
         </div>
 
-        {/* View Live Style — glass circle right */}
+        {/* Find This Look — glass circle right */}
         <Link
-          to="/findthatfit"
-          className="absolute right-6 sm:right-12 lg:right-20 bottom-36 sm:bottom-44 z-20 glass rounded-full w-32 h-32 sm:w-36 sm:h-36 flex flex-col items-center justify-center text-center gap-2 hover:bg-white/40 transition-all group"
+          to="/app"
+          className="absolute right-6 sm:right-12 lg:right-20 bottom-28 sm:bottom-36 z-20 glass rounded-full w-32 h-32 sm:w-36 sm:h-36 flex flex-col items-center justify-center text-center gap-2 hover:bg-white/40 transition-all group"
         >
-          <Camera size={24} className="text-brand group-hover:scale-110 transition-transform" />
-          <span className="text-sm sm:text-base font-medium text-gray-900 leading-tight px-3">
-            View Live Style
+          <Camera size={24} className="text-white group-hover:scale-110 transition-transform" />
+          <span className="text-sm sm:text-base font-medium text-white leading-tight px-3">
+            Find This Look
           </span>
         </Link>
 
-        {/* Bottom tag pills — black glass, larger */}
-        <div className="absolute bottom-8 sm:bottom-12 left-0 right-0 z-20 flex flex-wrap justify-center gap-3 sm:gap-4 px-4">
-          {heroTags.map(({ icon: Icon, label }) => (
-            <button
-              key={label}
-              type="button"
-              className="glass-pill-dark px-6 sm:px-8 py-3.5 sm:py-4 flex items-center gap-3 text-base sm:text-lg font-medium hover:bg-black/70 transition-colors"
-            >
-              <Icon size={20} className="text-brand-light shrink-0" />
-              {label}
-            </button>
-          ))}
+        {/* Style category bar */}
+        <div className="absolute bottom-6 sm:bottom-8 left-4 right-4 sm:left-8 sm:right-8 lg:left-12 lg:right-12 z-20">
+          <div className="glass-brown w-full overflow-x-auto scrollbar-hide px-3 sm:px-5 py-2.5 sm:py-3">
+            <div className="flex w-max mx-auto items-center justify-center gap-1 sm:gap-2">
+            {styleCategories.map(({ icon: Icon, label }) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => setActiveCategory(label)}
+                className={`shrink-0 flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm sm:text-base font-medium transition-all ${
+                  activeCategory === label
+                    ? 'bg-brand-light/80 text-white shadow-sm'
+                    : 'text-white/90 border border-white/30 hover:bg-white/10'
+                }`}
+              >
+                <Icon size={16} className="shrink-0" />
+                {label}
+              </button>
+            ))}
+            </div>
+          </div>
         </div>
       </section>
 

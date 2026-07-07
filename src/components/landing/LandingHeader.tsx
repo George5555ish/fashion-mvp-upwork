@@ -20,7 +20,7 @@ export default function LandingHeader() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-10 pt-4">
       <div className="glass rounded-2xl px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
-        <BrandLogo />
+        <BrandLogo heightClass="h-12 sm:h-14" />
 
         <nav className="hidden md:flex items-center gap-1 lg:gap-2">
           {navLinks.map((link) => (
