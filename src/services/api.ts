@@ -124,6 +124,8 @@ export interface CuratedLookSummary {
   links: AffiliateLink[];
   imageMimeType: string;
   imageBase64: string;
+  collectionId?: string | null;
+  collectionName?: string | null;
   createdAt: string;
 }
 
@@ -131,6 +133,24 @@ export interface CuratedLook extends CuratedLookSummary {
   imageBase64: string;
   published?: boolean;
   updatedAt?: string;
+}
+
+export interface CuratedCollectionSummary {
+  id: string;
+  name: string;
+  published: boolean;
+  lookCount: number;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface CuratedCollection extends CuratedCollectionSummary {
+  looks: CuratedLookSummary[];
+}
+
+export interface PublishedCollectionsResponse {
+  collections: CuratedCollection[];
+  uncategorizedLooks: CuratedLookSummary[];
 }
 
 export interface ClosetItem {
@@ -267,6 +287,16 @@ export async function removeAlbumItem(albumId: string, itemId: string): Promise<
   await api.delete(`/albums/${albumId}/items/${itemId}`);
 }
 
+export async function getPublishedCollections(): Promise<PublishedCollectionsResponse> {
+  const response = await api.get<PublishedCollectionsResponse>('/collections');
+  return response.data;
+}
+
+export async function getPublishedCollection(collectionId: string): Promise<CuratedCollection> {
+  const response = await api.get<{ collection: CuratedCollection }>(`/collections/${collectionId}`);
+  return response.data.collection;
+}
+
 export async function getPublishedLooks(): Promise<CuratedLookSummary[]> {
   const response = await api.get<{ looks: CuratedLookSummary[] }>('/looks');
   return response.data.looks;
@@ -298,6 +328,37 @@ export async function updateAdminLook(lookId: string, formData: FormData): Promi
 
 export async function deleteAdminLook(lookId: string): Promise<void> {
   await api.delete(`/admin/looks/${lookId}`);
+}
+
+export async function getAdminCollections(): Promise<CuratedCollectionSummary[]> {
+  const response = await api.get<{ collections: CuratedCollectionSummary[] }>('/admin/collections');
+  return response.data.collections;
+}
+
+export async function createAdminCollection(
+  name: string,
+  published = true,
+): Promise<CuratedCollectionSummary> {
+  const response = await api.post<{ collection: CuratedCollectionSummary }>('/admin/collections', {
+    name,
+    published,
+  });
+  return response.data.collection;
+}
+
+export async function updateAdminCollection(
+  collectionId: string,
+  payload: { name?: string; published?: boolean },
+): Promise<CuratedCollectionSummary> {
+  const response = await api.put<{ collection: CuratedCollectionSummary }>(
+    `/admin/collections/${collectionId}`,
+    payload,
+  );
+  return response.data.collection;
+}
+
+export async function deleteAdminCollection(collectionId: string): Promise<void> {
+  await api.delete(`/admin/collections/${collectionId}`);
 }
 
 export async function getClosetItems(): Promise<ClosetItem[]> {

@@ -1,56 +1,130 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { Loader2, Plus, Trash2 } from 'lucide-react';
+import { FolderPlus, Loader2, Plus, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
 import ProtectedRoute from '../components/ProtectedRoute';
 import {
+  createAdminCollection,
   createAdminLook,
+  deleteAdminCollection,
   deleteAdminLook,
+  getAdminCollections,
   getAdminLooks,
+  updateAdminCollection,
   updateAdminLook,
   type AffiliateLink,
+  type CuratedCollectionSummary,
   type CuratedLook,
 } from '../services/api';
 
 function AdminLooksPageContent() {
+  const [collections, setCollections] = useState<CuratedCollectionSummary[]>([]);
   const [looks, setLooks] = useState<CuratedLook[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [collectionName, setCollectionName] = useState('');
+  const [collectionPublished, setCollectionPublished] = useState(true);
+  const [creatingCollection, setCreatingCollection] = useState(false);
+
   const [title, setTitle] = useState('');
   const [caption, setCaption] = useState('');
   const [published, setPublished] = useState(true);
+  const [collectionId, setCollectionId] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [links, setLinks] = useState<AffiliateLink[]>([{ label: '', url: '' }]);
 
-  const loadLooks = async () => {
+  const loadData = async () => {
     try {
       setLoading(true);
-      setLooks(await getAdminLooks());
+      const [nextCollections, nextLooks] = await Promise.all([
+        getAdminCollections(),
+        getAdminLooks(),
+      ]);
+      setCollections(nextCollections);
+      setLooks(nextLooks);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load looks');
+      setError(err instanceof Error ? err.message : 'Failed to load admin data');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadLooks();
+    loadData();
   }, []);
 
-  const buildFormData = () => {
+  const buildLookFormData = (overrides?: {
+    title?: string;
+    caption?: string;
+    published?: boolean;
+    collectionId?: string | null;
+    links?: AffiliateLink[];
+    imageFile?: File | null;
+  }) => {
     const formData = new FormData();
-    formData.append('title', title.trim());
-    formData.append('caption', caption.trim());
-    formData.append('published', String(published));
-    formData.append('links', JSON.stringify(links.filter((link) => link.label.trim() && link.url.trim())));
-    if (imageFile) {
-      formData.append('image', imageFile);
+    formData.append('title', (overrides?.title ?? title).trim());
+    formData.append('caption', (overrides?.caption ?? caption).trim());
+    formData.append('published', String(overrides?.published ?? published));
+    formData.append(
+      'collectionId',
+      (overrides?.collectionId ?? collectionId) || 'none',
+    );
+    formData.append(
+      'links',
+      JSON.stringify((overrides?.links ?? links).filter((link) => link.label.trim() && link.url.trim())),
+    );
+    const file = overrides?.imageFile ?? imageFile;
+    if (file) {
+      formData.append('image', file);
     }
     return formData;
   };
 
-  const handleCreate = async (event: FormEvent) => {
+  const handleCreateCollection = async (event: FormEvent) => {
+    event.preventDefault();
+    const name = collectionName.trim();
+    if (!name) return;
+
+    try {
+      setCreatingCollection(true);
+      await createAdminCollection(name, collectionPublished);
+      setCollectionName('');
+      setCollectionPublished(true);
+      await loadData();
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create album');
+    } finally {
+      setCreatingCollection(false);
+    }
+  };
+
+  const toggleCollectionPublish = async (collection: CuratedCollectionSummary) => {
+    try {
+      await updateAdminCollection(collection.id, { published: !collection.published });
+      await loadData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update album');
+    }
+  };
+
+  const handleDeleteCollection = async (collectionIdToDelete: string) => {
+    if (!window.confirm('Delete this album? Looks inside it will become uncategorized.')) return;
+
+    try {
+      await deleteAdminCollection(collectionIdToDelete);
+      if (collectionId === collectionIdToDelete) {
+        setCollectionId('');
+      }
+      await loadData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete album');
+    }
+  };
+
+  const handleCreateLook = async (event: FormEvent) => {
     event.preventDefault();
     if (!imageFile) {
       setError('Outfit image is required');
@@ -59,12 +133,13 @@ function AdminLooksPageContent() {
 
     try {
       setSaving(true);
-      await createAdminLook(buildFormData());
+      await createAdminLook(buildLookFormData());
       setTitle('');
       setCaption('');
+      setCollectionId('');
       setImageFile(null);
       setLinks([{ label: '', url: '' }]);
-      await loadLooks();
+      await loadData();
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create look');
@@ -74,26 +149,47 @@ function AdminLooksPageContent() {
   };
 
   const togglePublish = async (look: CuratedLook) => {
-    const formData = new FormData();
-    formData.append('title', look.title);
-    formData.append('caption', look.caption);
-    formData.append('published', String(!look.published));
-    formData.append('links', JSON.stringify(look.links || []));
+    const formData = buildLookFormData({
+      title: look.title,
+      caption: look.caption,
+      published: !look.published,
+      collectionId: look.collectionId || 'none',
+      links: look.links || [],
+      imageFile: null,
+    });
 
     try {
       await updateAdminLook(look.id, formData);
-      await loadLooks();
+      await loadData();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update look');
     }
   };
 
-  const handleDelete = async (lookId: string) => {
+  const moveLookToCollection = async (look: CuratedLook, nextCollectionId: string) => {
+    const formData = buildLookFormData({
+      title: look.title,
+      caption: look.caption,
+      published: look.published,
+      collectionId: nextCollectionId || 'none',
+      links: look.links || [],
+      imageFile: null,
+    });
+
+    try {
+      await updateAdminLook(look.id, formData);
+      await loadData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to move look');
+    }
+  };
+
+  const handleDeleteLook = async (lookId: string) => {
     if (!window.confirm('Delete this look?')) return;
 
     try {
       await deleteAdminLook(lookId);
-      await loadLooks();
+      await loadData();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete look');
     }
@@ -104,9 +200,80 @@ function AdminLooksPageContent() {
       <Header />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin: Curated Looks</h1>
-        <p className="text-gray-600 mb-8">Upload outfit photos with affiliate links for FindThatFit.</p>
+        <p className="text-gray-600 mb-8">
+          Create fit albums like &quot;Restaurant Fits&quot;, then upload looks into each album.
+        </p>
 
-        <form onSubmit={handleCreate} className="bg-white rounded-xl border border-gray-200 p-6 mb-10 space-y-4">
+        <section className="bg-white rounded-xl border border-gray-200 p-6 mb-10">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Fit Albums</h2>
+          <form onSubmit={handleCreateCollection} className="flex flex-col sm:flex-row gap-3 mb-6">
+            <input
+              type="text"
+              value={collectionName}
+              onChange={(e) => setCollectionName(e.target.value)}
+              placeholder='New album name, e.g. Restaurant Fits'
+              className="flex-1 rounded-lg border border-gray-300 px-3 py-2"
+            />
+            <label className="flex items-center gap-2 text-sm text-gray-700 sm:px-2">
+              <input
+                type="checkbox"
+                checked={collectionPublished}
+                onChange={(e) => setCollectionPublished(e.target.checked)}
+              />
+              Publish album
+            </label>
+            <button
+              type="submit"
+              disabled={creatingCollection}
+              className="btn-primary flex items-center justify-center gap-2 disabled:opacity-60"
+            >
+              <FolderPlus size={18} />
+              Create Album
+            </button>
+          </form>
+
+          {collections.length === 0 ? (
+            <p className="text-sm text-gray-500">No albums yet. Create one above.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {collections.map((collection) => (
+                <div
+                  key={collection.id}
+                  className="rounded-xl border border-gray-200 p-4 flex items-start justify-between gap-4"
+                >
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{collection.name}</h3>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {collection.lookCount} look{collection.lookCount === 1 ? '' : 's'} ·{' '}
+                      {collection.published ? 'Published' : 'Draft'}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => toggleCollectionPublish(collection)}
+                      className="btn-secondary text-sm py-2 px-3"
+                    >
+                      {collection.published ? 'Unpublish' : 'Publish'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteCollection(collection.id)}
+                      className="text-gray-400 hover:text-red-600 p-2"
+                      aria-label={`Delete ${collection.name}`}
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <form onSubmit={handleCreateLook} className="bg-white rounded-xl border border-gray-200 p-6 mb-10 space-y-4">
+          <h2 className="text-xl font-semibold text-gray-900">Upload a Look</h2>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
@@ -118,15 +285,31 @@ function AdminLooksPageContent() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Outfit image</label>
-              <input
-                type="file"
-                accept="image/*"
-                required
-                onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                className="w-full text-sm"
-              />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Album</label>
+              <select
+                value={collectionId}
+                onChange={(e) => setCollectionId(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2"
+              >
+                <option value="">No album</option>
+                {collections.map((collection) => (
+                  <option key={collection.id} value={collection.id}>
+                    {collection.name}
+                  </option>
+                ))}
+              </select>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Outfit image</label>
+            <input
+              type="file"
+              accept="image/*"
+              required
+              onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+              className="w-full text-sm"
+            />
           </div>
 
           <div>
@@ -205,25 +388,45 @@ function AdminLooksPageContent() {
                   alt={look.title}
                   className="w-full aspect-[3/4] object-cover"
                 />
-                <div className="p-4">
+                <div className="p-4 space-y-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <h2 className="font-semibold text-gray-900">{look.title}</h2>
-                      <p className="text-sm text-gray-500 mt-1">{look.published ? 'Published' : 'Draft'}</p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {look.published ? 'Published' : 'Draft'}
+                        {look.collectionName ? ` · ${look.collectionName}` : ' · No album'}
+                      </p>
                     </div>
                     <button
                       type="button"
-                      onClick={() => handleDelete(look.id)}
+                      onClick={() => handleDeleteLook(look.id)}
                       className="text-gray-400 hover:text-red-600"
                       aria-label="Delete look"
                     >
                       <Trash2 size={18} />
                     </button>
                   </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Move to album</label>
+                    <select
+                      value={look.collectionId || ''}
+                      onChange={(e) => moveLookToCollection(look, e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                    >
+                      <option value="">No album</option>
+                      {collections.map((collection) => (
+                        <option key={collection.id} value={collection.id}>
+                          {collection.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   <button
                     type="button"
                     onClick={() => togglePublish(look)}
-                    className="btn-secondary mt-4 text-sm py-2 px-4"
+                    className="btn-secondary text-sm py-2 px-4"
                   >
                     {look.published ? 'Unpublish' : 'Publish'}
                   </button>
