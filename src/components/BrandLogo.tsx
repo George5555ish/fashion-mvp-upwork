@@ -6,7 +6,7 @@ interface BrandLogoProps {
   heightClass?: string;
 }
 
-export default function BrandLogo({ className = '', heightClass = 'h-9 sm:h-10' }: BrandLogoProps) {
+export default function BrandLogo({ className = '', heightClass = 'h-14 sm:h-16' }: BrandLogoProps) {
   return (
     <Link to="/" className={`inline-flex items-center shrink-0 ${className}`}>
       <img

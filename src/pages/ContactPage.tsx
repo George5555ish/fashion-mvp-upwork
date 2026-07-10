@@ -31,15 +31,6 @@ export default function ContactPage() {
             </p>
           </div>
         </div>
-
-        <div className="p-6 rounded-2xl bg-gray-50 border border-gray-100">
-          <h2 className="font-semibold text-gray-900 mb-2">For Amazon Associates inquiries</h2>
-          <p className="text-sm text-gray-600">
-            This website ({siteConfig.name}) is the official platform where our affiliate
-            links are displayed. Product recommendations shown in our outfit analyzer
-            and shopping features may include links to Amazon and other retailers.
-          </p>
-        </div>
       </div>
     </MarketingLayout>
   );

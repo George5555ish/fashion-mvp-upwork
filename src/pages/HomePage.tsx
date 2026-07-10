@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -10,13 +10,11 @@ import {
   Music,
   Palmtree,
   ShoppingBag,
-  Sparkles,
   Sun,
 } from 'lucide-react';
 import LandingHeader from '../components/landing/LandingHeader';
 import LandingFooter from '../components/landing/LandingFooter';
 import PublishedLooksSection from '../components/landing/PublishedLooksSection';
-import { siteConfig } from '../config/site';
 
 const heroSlides = [
   {
@@ -57,47 +55,11 @@ const colors = [
   { name: 'Navy', hex: '#1E3A5F' },
 ];
 
-const collections = [
-  {
-    name: 'Violet Puff Coat',
-    price: 300,
-    image: '/collection-violet-coat.jpg',
-  },
-  {
-    name: 'Leather Edge Jacket',
-    price: 420,
-    image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&h=700&fit=crop',
-  },
-  {
-    name: 'Emerald Silk Dress',
-    price: 280,
-    image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500&h=700&fit=crop',
-  },
-  {
-    name: 'Cloud Puffer',
-    price: 350,
-    image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=500&h=700&fit=crop',
-  },
-  {
-    name: 'Urban Layer Coat',
-    price: 390,
-    image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&h=700&fit=crop',
-  },
-];
-
-const galleryImages = {
-  hero: '/gallery-editorial.jpg',
-  portrait1: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=500&h=650&fit=crop',
-  portrait2: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&h=650&fit=crop',
-  cinematic: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&h=500&fit=crop',
-};
-
 export default function HomePage() {
   const [selectedSize, setSelectedSize] = useState<(typeof sizes)[number]>('Medium');
   const [selectedColor, setSelectedColor] = useState(colors[0].name);
   const [activeSlide, setActiveSlide] = useState(0);
   const [activeCategory, setActiveCategory] = useState(styleCategories[0].label);
-  const collectionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const interval = window.setInterval(() => {
@@ -105,13 +67,6 @@ export default function HomePage() {
     }, HERO_INTERVAL_MS);
     return () => window.clearInterval(interval);
   }, []);
-
-  const scrollCollections = (direction: 'left' | 'right') => {
-    collectionsRef.current?.scrollBy({
-      left: direction === 'left' ? -280 : 280,
-      behavior: 'smooth',
-    });
-  };
 
   return (
     <div className="landing-bg min-h-screen">
@@ -293,124 +248,6 @@ export default function HomePage() {
       </section>
 
       <PublishedLooksSection />
-
-      {/* Our Collections */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-10 overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 text-center mb-12">
-            Our Collections
-          </h2>
-
-          <div
-            ref={collectionsRef}
-            className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0"
-          >
-            {collections.map((item) => (
-              <div
-                key={item.name}
-                className="snap-center shrink-0 w-56 sm:w-64 neuro-surface overflow-hidden group"
-              >
-                <div className="relative aspect-[3/4] overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <span className="glass-pill px-3 py-1.5 text-xs font-semibold text-gray-800">
-                      By ${item.price}
-                    </span>
-                  </div>
-                </div>
-                <div className="p-4 flex items-center justify-between gap-2">
-                  <p className="font-medium text-gray-800 text-sm truncate">{item.name}</p>
-                  <Link
-                    to="/findthatfit"
-                    className="shrink-0 neuro-btn px-4 py-2 text-xs font-medium text-gray-700 hover:text-brand"
-                  >
-                    View
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex justify-center gap-3 mt-6">
-            <button
-              type="button"
-              onClick={() => scrollCollections('left')}
-              className="neuro-btn w-11 h-11 flex items-center justify-center text-gray-600"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollCollections('right')}
-              className="neuro-btn w-11 h-11 flex items-center justify-center text-gray-600"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Fashion Gallery */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-10">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 text-center mb-12">
-            Fashion Gallery
-          </h2>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-            <div className="lg:col-span-2 rounded-3xl overflow-hidden shadow-neuro aspect-[4/3] lg:aspect-auto lg:min-h-[420px]">
-              <img
-                src={galleryImages.hero}
-                alt="Fashion editorial"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="flex flex-row lg:flex-col gap-4 sm:gap-6">
-              <div className="flex-1 rounded-3xl overflow-hidden shadow-neuro aspect-[3/4]">
-                <img
-                  src={galleryImages.portrait1}
-                  alt="Street style portrait"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="flex-1 rounded-3xl overflow-hidden shadow-neuro aspect-[3/4]">
-                <img
-                  src={galleryImages.portrait2}
-                  alt="Runway look"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="relative mt-4 sm:mt-6 rounded-3xl overflow-hidden shadow-neuro aspect-[21/9] min-h-[200px] sm:min-h-[280px]">
-            <img
-              src={galleryImages.cinematic}
-              alt="Urban fashion walk"
-              className="w-full h-full object-cover grayscale"
-            />
-            <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center px-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="w-7 h-7 text-brand-light" strokeWidth={1.5} />
-                <span className="text-2xl sm:text-3xl font-semibold text-white">{siteConfig.name}</span>
-              </div>
-              <p className="text-sm sm:text-base text-gray-200 max-w-md">
-                Take your style to the next level with us
-              </p>
-              <Link
-                to="/app"
-                className="mt-6 glass-pill px-6 py-3 text-sm font-medium text-white hover:bg-white/30 transition-colors"
-              >
-                Try the Outfit Analyzer
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <LandingFooter />
     </div>

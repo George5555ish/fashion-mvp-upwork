@@ -35,7 +35,7 @@ export default function LandingHeader() {
     <>
       <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-10 pt-4">
         <div className="glass rounded-2xl px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
-          <BrandLogo heightClass="h-12 sm:h-14" />
+          <BrandLogo heightClass="h-14 sm:h-16" />
 
           <nav className="hidden md:flex items-center gap-1 lg:gap-2">
             {navLinks.slice(0, 3).map((link) => (
@@ -106,7 +106,7 @@ export default function LandingHeader() {
           }`}
         >
           <div className="flex items-center justify-between px-6 pt-6 pb-4">
-            <BrandLogo heightClass="h-12" />
+            <BrandLogo heightClass="h-14" />
             <button
               type="button"
               onClick={closeMenu}
