@@ -2,15 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
-  Briefcase,
   Camera,
-  ChevronLeft,
-  ChevronRight,
-  Heart,
-  Music,
-  Palmtree,
-  ShoppingBag,
-  Sun,
 } from 'lucide-react';
 import LandingHeader from '../components/landing/LandingHeader';
 import LandingFooter from '../components/landing/LandingFooter';
@@ -37,29 +29,14 @@ const heroSlides = [
 
 const HERO_INTERVAL_MS = 5000;
 
-const styleCategories = [
-  { icon: ShoppingBag, label: 'Old Money' },
-  { icon: Music, label: 'Minimal' },
-  { icon: Sun, label: 'Summer' },
-  { icon: Briefcase, label: 'Office' },
-  { icon: Palmtree, label: 'Vacation' },
-  { icon: Heart, label: 'Date Night' },
-];
-
-const sizes = ['S', 'Medium', 'L', 'XL', '2XL'] as const;
-const colors = [
-  { name: 'Black', hex: '#1A1A1A' },
-  { name: 'Pink', hex: '#F4A4C0' },
-  { name: 'Brown', hex: '#8B5E3C' },
-  { name: 'Grey', hex: '#9CA3AF' },
-  { name: 'Navy', hex: '#1E3A5F' },
-];
+// const styleCategories = [
+//   { icon: ShoppingBag, label: 'Old Money' },
+//   ...
+// ];
 
 export default function HomePage() {
-  const [selectedSize, setSelectedSize] = useState<(typeof sizes)[number]>('Medium');
-  const [selectedColor, setSelectedColor] = useState(colors[0].name);
   const [activeSlide, setActiveSlide] = useState(0);
-  const [activeCategory, setActiveCategory] = useState(styleCategories[0].label);
+  // const [activeCategory, setActiveCategory] = useState('Old Money');
 
   useEffect(() => {
     const interval = window.setInterval(() => {
@@ -140,112 +117,18 @@ export default function HomePage() {
           </span>
         </Link>
 
-        {/* Style category bar */}
+        {/* Style category bar — hidden for now
         <div className="absolute bottom-6 sm:bottom-8 left-4 right-4 sm:left-8 sm:right-8 lg:left-12 lg:right-12 z-20">
-          <div className="glass-brown w-full overflow-x-auto scrollbar-hide px-3 sm:px-5 py-2.5 sm:py-3">
-            <div className="flex w-max mx-auto items-center justify-center gap-1 sm:gap-2">
-            {styleCategories.map(({ icon: Icon, label }) => (
-              <button
-                key={label}
-                type="button"
-                onClick={() => setActiveCategory(label)}
-                className={`shrink-0 flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm sm:text-base font-medium transition-all ${
-                  activeCategory === label
-                    ? 'bg-brand-light/80 text-white shadow-sm'
-                    : 'text-white/90 border border-white/30 hover:bg-white/10'
-                }`}
-              >
-                <Icon size={16} className="shrink-0" />
-                {label}
-              </button>
-            ))}
-            </div>
-          </div>
+          ...
         </div>
+        */}
       </section>
 
-      {/* New Live Style */}
+      {/* New Live Style — hidden for now
       <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-10">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 text-center mb-12">
-            New Live Style
-          </h2>
-
-          <div className="neuro-surface p-6 sm:p-10 lg:p-12">
-            <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-              {/* Size selector */}
-              <div className="flex lg:flex-col gap-3 order-2 lg:order-1">
-                {sizes.map((size) => (
-                  <button
-                    key={size}
-                    type="button"
-                    onClick={() => setSelectedSize(size)}
-                    className={`neuro-btn w-12 h-12 sm:w-14 sm:h-14 text-xs sm:text-sm font-medium ${
-                      selectedSize === size ? 'neuro-btn-active' : 'text-gray-600'
-                    }`}
-                  >
-                    {size === 'Medium' ? 'M' : size}
-                  </button>
-                ))}
-              </div>
-
-              {/* Product image */}
-              <div className="flex-1 flex flex-col items-center order-1 lg:order-2">
-                <div className="w-48 sm:w-56 lg:w-64 aspect-square rounded-3xl overflow-hidden shadow-neuro-sm bg-white mb-4">
-                  <img
-                    src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=500&fit=crop"
-                    alt="Minimalism Shirt"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-800">Minimalism Shirt</h3>
-                <p className="text-sm text-gray-500 mt-1">
-                  {selectedColor} · {selectedSize}
-                </p>
-              </div>
-
-              {/* Color selector */}
-              <div className="flex lg:flex-col gap-3 order-3">
-                {colors.map((color) => (
-                  <button
-                    key={color.name}
-                    type="button"
-                    onClick={() => setSelectedColor(color.name)}
-                    title={color.name}
-                    className={`neuro-btn w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center ${
-                      selectedColor === color.name ? 'ring-2 ring-brand ring-offset-2' : ''
-                    }`}
-                  >
-                    <span
-                      className="w-7 h-7 rounded-full border border-white/50"
-                      style={{ backgroundColor: color.hex }}
-                    />
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between mt-10 gap-4">
-              <div className="flex gap-3">
-                <button type="button" className="neuro-btn w-11 h-11 flex items-center justify-center text-gray-600">
-                  <ChevronLeft size={20} />
-                </button>
-                <button type="button" className="neuro-btn w-11 h-11 flex items-center justify-center text-gray-600">
-                  <ChevronRight size={20} />
-                </button>
-              </div>
-
-              <Link
-                to="/app"
-                className="flex-1 max-w-md flex items-center justify-center gap-2 bg-brand hover:bg-brand-dark text-white font-medium py-4 px-6 rounded-2xl transition-colors shadow-lg shadow-brand/30"
-              >
-                <ShoppingBag size={20} />
-                Add to cart — $199
-              </Link>
-            </div>
-          </div>
-        </div>
+        ...
       </section>
+      */}
 
       <PublishedLooksSection />
 

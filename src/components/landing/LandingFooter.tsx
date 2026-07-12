@@ -6,7 +6,7 @@ import { siteConfig } from '../../config/site';
 const productLinks = [
   { to: '/app', label: 'Outfit Analyzer' },
   { to: '/findthatfit', label: 'FindThatFit' },
-  { to: '/closet', label: 'Closet Bestie' },
+  { to: '/closet', label: "Cher's Closet" },
   { to: '/albums', label: 'Albums' },
 ];
 
@@ -78,7 +78,7 @@ export default function LandingFooter() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
           <div className="lg:col-span-2">
             <div className="mb-4">
-              <BrandLogo heightClass="h-14 sm:h-16" />
+              <BrandLogo variant="white" />
             </div>
             <p className="text-sm text-gray-400 max-w-sm mb-6 leading-relaxed">
               {siteConfig.description}
