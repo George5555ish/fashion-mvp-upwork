@@ -1,26 +1,40 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  ArrowRight,
-  Search,
-  User,
-  ShoppingBag,
-  Menu,
-  X,
-} from 'lucide-react';
+import { ArrowRight, Menu, X } from 'lucide-react';
 import BrandLogo from '../BrandLogo';
 import { useAuth } from '../../contexts/AuthContext';
+import type { User } from '../../services/api';
 
-const navLinks = [
-  { to: '/findthatfit', label: 'Shop' },
-  { to: '/app', label: 'Try App' },
-  { to: '/about', label: 'About us' },
-  { to: '/contact', label: 'Contact' },
-];
+type NavItem = {
+  to: string;
+  label: string;
+};
+
+function getNavItems(user: User | null): NavItem[] {
+  const items: NavItem[] = [
+    { to: '/', label: 'Home' },
+    { to: '/app', label: 'Analyzer' },
+    { to: '/findthatfit', label: 'FindThatFit' },
+  ];
+
+  if (user) {
+    items.push(
+      { to: '/albums', label: 'Albums' },
+      { to: '/closet', label: 'Closet' },
+    );
+  }
+
+  if (user?.role === 'admin') {
+    items.push({ to: '/admin/looks', label: 'Admin' });
+  }
+
+  return items;
+}
 
 export default function LandingHeader() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const navItems = useMemo(() => getNavItems(user), [user]);
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
@@ -31,65 +45,46 @@ export default function LandingHeader() {
 
   const closeMenu = () => setMenuOpen(false);
 
+  const linkClassName =
+    'px-2 lg:px-3 py-2 rounded-xl text-sm font-medium text-white hover:bg-white/15 transition-colors whitespace-nowrap';
+
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-10 pt-4">
-        <div className="glass rounded-2xl px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
-          <BrandLogo />
+      <header className="fixed top-0 left-0 right-0 z-50 px-2 sm:px-3 lg:px-4 pt-3">
+        <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 px-2 sm:px-3 py-2.5 flex items-center justify-between gap-3">
+          <BrandLogo heightClass="h-14 sm:h-16" />
 
-          <nav className="hidden md:flex items-center gap-1 lg:gap-2">
-            {navLinks.slice(0, 3).map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className="px-3 lg:px-4 py-2 rounded-xl text-sm font-medium text-gray-700 hover:bg-white/40 transition-colors"
-              >
+          <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
+            {navItems.map((link) => (
+              <Link key={link.to} to={link.to} className={linkClassName}>
                 {link.label}
               </Link>
             ))}
+            {user ? (
+              <button type="button" onClick={logout} className={linkClassName}>
+                Log out
+              </button>
+            ) : (
+              <Link to="/login" className={linkClassName}>
+                Log in
+              </Link>
+            )}
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="hidden sm:flex items-center gap-2 glass-pill px-3 py-2">
-              <Search size={16} className="text-gray-500" />
-              <input
-                type="search"
-                placeholder="Search styles..."
-                className="bg-transparent text-sm text-gray-700 placeholder:text-gray-400 outline-none w-24 lg:w-36"
-              />
-            </div>
-
-            <Link
-              to={user ? '/closet' : '/login'}
-              className="neuro-btn w-9 h-9 flex items-center justify-center text-gray-700"
-              aria-label={user ? 'Closet' : 'Log in'}
-            >
-              <User size={18} />
-            </Link>
-
-            <Link
-              to="/albums"
-              className="neuro-btn w-9 h-9 flex items-center justify-center text-gray-700"
-              aria-label="Albums"
-            >
-              <ShoppingBag size={18} />
-            </Link>
-
-            <button
-              type="button"
-              onClick={() => setMenuOpen(true)}
-              className="neuro-btn w-9 h-9 flex items-center justify-center text-gray-700 md:hidden"
-              aria-label="Open menu"
-            >
-              <Menu size={18} />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => setMenuOpen(true)}
+            className="w-9 h-9 flex items-center justify-center rounded-full text-white hover:bg-white/15 transition-colors lg:hidden shrink-0"
+            aria-label="Open menu"
+          >
+            <Menu size={18} />
+          </button>
         </div>
       </header>
 
       {/* Full-screen mobile menu */}
       <div
-        className={`fixed inset-0 z-[60] md:hidden transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[60] lg:hidden transition-opacity duration-300 ${
           menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         aria-hidden={!menuOpen}
@@ -118,7 +113,7 @@ export default function LandingHeader() {
           </div>
 
           <nav className="flex-1 flex flex-col justify-center px-8 sm:px-12 gap-2">
-            {navLinks.map((link, index) => (
+            {navItems.map((link, index) => (
               <Link
                 key={link.to}
                 to={link.to}
@@ -136,41 +131,36 @@ export default function LandingHeader() {
               </Link>
             ))}
 
-            {user && (
-              <>
-                <Link
-                  to="/albums"
-                  onClick={closeMenu}
-                  className="group flex items-center justify-between py-4 border-b border-white/10"
-                >
-                  <span className="font-serif text-3xl sm:text-4xl text-white group-hover:text-brand-light transition-colors">
-                    Albums
-                  </span>
-                  <ArrowRight size={22} className="text-white/40 group-hover:text-brand-light group-hover:translate-x-1 transition-all" />
-                </Link>
-                <Link
-                  to="/closet"
-                  onClick={closeMenu}
-                  className="group flex items-center justify-between py-4 border-b border-white/10"
-                >
-                  <span className="font-serif text-3xl sm:text-4xl text-white group-hover:text-brand-light transition-colors">
-                    Closet
-                  </span>
-                  <ArrowRight size={22} className="text-white/40 group-hover:text-brand-light group-hover:translate-x-1 transition-all" />
-                </Link>
-              </>
-            )}
-
-            {user?.role === 'admin' && (
+            {user ? (
+              <button
+                type="button"
+                onClick={() => {
+                  logout();
+                  closeMenu();
+                }}
+                className="group flex items-center justify-between py-4 border-b border-white/10 text-left"
+              >
+                <span className="font-serif text-3xl sm:text-4xl text-white group-hover:text-brand-light transition-colors">
+                  Log out
+                </span>
+                <ArrowRight
+                  size={22}
+                  className="text-white/40 group-hover:text-brand-light group-hover:translate-x-1 transition-all"
+                />
+              </button>
+            ) : (
               <Link
-                to="/admin/looks"
+                to="/login"
                 onClick={closeMenu}
                 className="group flex items-center justify-between py-4 border-b border-white/10"
               >
                 <span className="font-serif text-3xl sm:text-4xl text-white group-hover:text-brand-light transition-colors">
-                  Admin
+                  Log in
                 </span>
-                <ArrowRight size={22} className="text-white/40 group-hover:text-brand-light group-hover:translate-x-1 transition-all" />
+                <ArrowRight
+                  size={22}
+                  className="text-white/40 group-hover:text-brand-light group-hover:translate-x-1 transition-all"
+                />
               </Link>
             )}
           </nav>
@@ -184,15 +174,6 @@ export default function LandingHeader() {
               Try OutFind
               <ArrowRight size={20} />
             </Link>
-            {!user && (
-              <Link
-                to="/login"
-                onClick={closeMenu}
-                className="mt-3 flex items-center justify-center w-full py-4 rounded-2xl border border-white/25 text-white/90 hover:bg-white/10 transition-colors"
-              >
-                Log in
-              </Link>
-            )}
           </div>
         </div>
       </div>

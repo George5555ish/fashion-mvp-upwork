@@ -10,20 +10,12 @@ import PublishedLooksSection from '../components/landing/PublishedLooksSection';
 
 const heroSlides = [
   {
-    src: '/hero-dress.png',
-    alt: 'Evening look with floral black dress',
-  },
-  {
     src: '/hero-casual.png',
     alt: 'Casual street style at night',
   },
   {
     src: '/hero-evening.png',
     alt: 'Formal evening dresses with embellished clutches',
-  },
-  {
-    src: '/hero-accessory.png',
-    alt: 'Espresso martini beaded handbag',
   },
 ];
 
