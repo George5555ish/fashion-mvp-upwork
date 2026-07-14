@@ -3,33 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Menu, X } from 'lucide-react';
 import BrandLogo from '../BrandLogo';
 import { useAuth } from '../../contexts/AuthContext';
-import type { User } from '../../services/api';
-
-type NavItem = {
-  to: string;
-  label: string;
-};
-
-function getNavItems(user: User | null): NavItem[] {
-  const items: NavItem[] = [
-    { to: '/', label: 'Home' },
-    { to: '/app', label: 'Analyzer' },
-    { to: '/findthatfit', label: 'FindThatFit' },
-  ];
-
-  if (user) {
-    items.push(
-      { to: '/albums', label: 'Albums' },
-      { to: '/closet', label: 'Closet' },
-    );
-  }
-
-  if (user?.role === 'admin') {
-    items.push({ to: '/admin/looks', label: 'Admin' });
-  }
-
-  return items;
-}
+import { getNavItems } from '../../config/navigation';
 
 export default function LandingHeader() {
   const { user, logout } = useAuth();
@@ -52,7 +26,7 @@ export default function LandingHeader() {
     <>
       <header className="fixed top-0 left-0 right-0 z-50 px-2 sm:px-3 lg:px-4 pt-3">
         <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 px-2 sm:px-3 py-2.5 flex items-center justify-between gap-3">
-          <BrandLogo heightClass="h-14 sm:h-16" />
+          <BrandLogo heightClass="h-20 sm:h-24" />
 
           <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
             {navItems.map((link) => (

@@ -62,7 +62,10 @@ export default function FindThatFitPage() {
         <div className="mb-10">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">FindThatFit</h1>
           <p className="text-gray-600 max-w-2xl">
-            Browse outfit albums with shoppable affiliate links. Tap a look to shop each piece.
+            Browse outfit albums with shoppable links. Tap a look to shop each piece.
+          </p>
+          <p className="text-gray-500 max-w-2xl mt-2">
+            Updated weekly according to trends, sales and your desires.
           </p>
         </div>
 

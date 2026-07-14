@@ -17,11 +17,6 @@ export default function MarketingFooter() {
           <div>
             <p className="text-lg font-bold text-gray-900 mb-2">{siteConfig.name}</p>
             <p className="text-sm text-gray-600 max-w-md">{siteConfig.description}</p>
-            <p className="text-xs text-gray-500 mt-4">
-              {siteConfig.name} is a participant in the Amazon Services LLC Associates Program,
-              an affiliate advertising program designed to provide a means for sites to earn
-              advertising fees by advertising and linking to Amazon.com.
-            </p>
           </div>
 
           <div>

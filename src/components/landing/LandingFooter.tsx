@@ -104,11 +104,8 @@ export default function LandingFooter() {
           <FooterColumn title="Support" links={supportLinks} />
         </div>
 
-        <div className="border-t border-white/10 mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
+        <div className="border-t border-white/10 mt-12 pt-6 text-center text-xs text-gray-500">
           <p>&copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.</p>
-          <p className="text-center sm:text-right max-w-md">
-            Amazon Associates participant. We may earn fees from qualifying purchases.
-          </p>
         </div>
       </div>
     </footer>
