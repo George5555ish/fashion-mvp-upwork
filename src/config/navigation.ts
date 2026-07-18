@@ -6,25 +6,18 @@ export interface NavItem {
 }
 
 // Canonical, left-to-right order of the primary nav links, shared across every
-// header so ordering stays consistent app-wide. Closet/Albums require auth and
-// Admin requires the admin role, but their relative position is preserved.
+// header so ordering stays consistent app-wide. Closet and Albums are always
+// visible (logged-out users are redirected to login by ProtectedRoute); only
+// Admin is gated, on the admin role.
 export function getNavItems(user: User | null): NavItem[] {
   const items: NavItem[] = [
     { to: '/', label: 'Home' },
     { to: '/findthatfit', label: 'FindThatFit' },
+    { to: '/closet', label: 'Closet' },
+    { to: '/app', label: 'Analyzer' },
+    { to: '/albums', label: 'Albums' },
+    { to: '/contact', label: 'Contact' },
   ];
-
-  if (user) {
-    items.push({ to: '/closet', label: 'Closet' });
-  }
-
-  items.push({ to: '/app', label: 'Analyzer' });
-
-  if (user) {
-    items.push({ to: '/albums', label: 'Albums' });
-  }
-
-  items.push({ to: '/contact', label: 'Contact' });
 
   if (user?.role === 'admin') {
     items.push({ to: '/admin/looks', label: 'Admin' });
