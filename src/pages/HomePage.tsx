@@ -4,6 +4,8 @@ import { ArrowRight, Camera } from 'lucide-react';
 import LandingHeader from '../components/landing/LandingHeader';
 import LandingFooter from '../components/landing/LandingFooter';
 import DigitalClosetSection from '../components/landing/DigitalClosetSection';
+import AnalyzerSection from '../components/landing/AnalyzerSection';
+import FloatingGlassCards from '../components/landing/FloatingGlassCards';
 // import PublishedLooksSection from '../components/landing/PublishedLooksSection';
 
 const heroSlides = [
@@ -99,8 +101,12 @@ export default function HomePage() {
         </Link>
       </section>
 
-      {/* FindThatFit — split layout */}
-      <section className="relative py-16 sm:py-24 px-4 sm:px-6 lg:px-10">
+      {/* Feature sections with floating glass cards */}
+      <div className="relative">
+        <FloatingGlassCards layer="back" />
+
+        {/* FindThatFit — split layout */}
+        <section className="relative z-10 py-16 sm:py-24 px-4 sm:px-6 lg:px-10">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div className="w-full">
             <div className="rounded-3xl bg-[#FDE2E4]/60 p-3 sm:p-4 shadow-glass">
@@ -142,9 +148,18 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
-      </section>
+        </section>
 
-      <DigitalClosetSection />
+        <div className="relative z-10">
+          <DigitalClosetSection />
+        </div>
+
+        <div className="relative z-10">
+          <AnalyzerSection />
+        </div>
+
+        <FloatingGlassCards layer="front" />
+      </div>
 
       {/* Curated looks on homepage — hidden for now
       <PublishedLooksSection />

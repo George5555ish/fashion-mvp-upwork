@@ -139,4 +139,24 @@
       transform: translateX(0);
     }
   }
+
+  .animate-float-glass {
+    animation: floatGlass var(--float-duration, 9s) ease-in-out infinite;
+    opacity: 0.92;
+  }
+
+  @keyframes floatGlass {
+    0%, 100% {
+      transform: translate(0, 0) rotate(var(--float-rotate, 0deg));
+    }
+    25% {
+      transform: translate(8px, -14px) rotate(calc(var(--float-rotate, 0deg) + 1deg));
+    }
+    50% {
+      transform: translate(-6px, -22px) rotate(calc(var(--float-rotate, 0deg) - 1deg));
+    }
+    75% {
+      transform: translate(10px, -10px) rotate(calc(var(--float-rotate, 0deg) + 0.5deg));
+    }
+  }
 }
