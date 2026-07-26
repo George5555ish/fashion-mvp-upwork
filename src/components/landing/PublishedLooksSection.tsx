@@ -1,21 +1,12 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import CuratedLooksGallery from '../CuratedLooksGallery';
-import { getPublishedCollections, type PublishedCollectionsResponse } from '../../services/api';
+import { usePublishedCollections } from '../../hooks/usePublishedCollections';
 
 export default function PublishedLooksSection() {
-  const [data, setData] = useState<PublishedCollectionsResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading } = usePublishedCollections();
 
-  useEffect(() => {
-    getPublishedCollections()
-      .then(setData)
-      .catch(() => setData({ collections: [], uncategorizedLooks: [] }))
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-10">
         <div className="max-w-7xl mx-auto flex justify-center py-12">

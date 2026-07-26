@@ -1,18 +1,19 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Loader2, Plus, Share2, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
 import OutfitBuilderCanvas from '../components/OutfitBuilderCanvas';
 import ProtectedRoute from '../components/ProtectedRoute';
 import ShareOutfitModal from '../components/ShareOutfitModal';
+import { useAuth } from '../contexts/AuthContext';
+import { useClosetItems, useOutfits } from '../hooks/useClosetData';
+import { queryKeys } from '../lib/queryKeys';
 import {
   createClosetItem,
   createOutfit,
   deleteClosetItem,
   deleteOutfit,
-  getClosetItems,
-  getOutfits,
   shareOutfit,
-  type ClosetItem,
   type Outfit,
 } from '../services/api';
 import { getErrorMessage } from '../utils/errors';
@@ -39,9 +40,15 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 function ClosetPageContent() {
-  const [items, setItems] = useState<ClosetItem[]>([]);
-  const [outfits, setOutfits] = useState<Outfit[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const itemsQuery = useClosetItems();
+  const outfitsQuery = useOutfits();
+
+  const items = itemsQuery.data ?? [];
+  const outfits = outfitsQuery.data ?? [];
+  const loading = (itemsQuery.isLoading || outfitsQuery.isLoading) && !itemsQuery.data && !outfitsQuery.data;
+
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'items' | 'builder' | 'outfits'>('items');
   const [activeCategory, setActiveCategory] = useState('all');
@@ -87,23 +94,12 @@ function ClosetPageContent() {
     }
   }, [activeCategory, items]);
 
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      const [closetItems, savedOutfits] = await Promise.all([getClosetItems(), getOutfits()]);
-      setItems(closetItems);
-      setOutfits(savedOutfits);
-      setError(null);
-    } catch (err) {
-      setError(getErrorMessage(err, 'Failed to load closet'));
-    } finally {
-      setLoading(false);
-    }
+  const refreshCloset = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: queryKeys.closetItems(user?.id) }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.outfits(user?.id) }),
+    ]);
   };
-
-  useEffect(() => {
-    loadData();
-  }, []);
 
   const handleAddItem = async (event: FormEvent) => {
     event.preventDefault();
@@ -124,7 +120,7 @@ function ClosetPageContent() {
       setName('');
       setColor('');
       setImageFile(null);
-      await loadData();
+      await refreshCloset();
       setError(null);
     } catch (err) {
       setError(getErrorMessage(err, 'Failed to add closet item'));
@@ -139,7 +135,7 @@ function ClosetPageContent() {
     try {
       await deleteClosetItem(itemId);
       setCanvasItemIds((current) => current.filter((id) => id !== itemId));
-      await loadData();
+      await refreshCloset();
     } catch (err) {
       setError(getErrorMessage(err, 'Failed to delete item'));
     }
@@ -158,7 +154,7 @@ function ClosetPageContent() {
       setOutfitName('');
       setCanvasItemIds([]);
       setActiveTab('outfits');
-      await loadData();
+      await refreshCloset();
       setError(null);
     } catch (err) {
       setError(getErrorMessage(err, 'Failed to save outfit'));
@@ -172,7 +168,7 @@ function ClosetPageContent() {
 
     try {
       await deleteOutfit(outfitId);
-      await loadData();
+      await refreshCloset();
     } catch (err) {
       setError(getErrorMessage(err, 'Failed to delete outfit'));
     }
@@ -189,7 +185,7 @@ function ClosetPageContent() {
       }
 
       const result = await shareOutfit(outfit.id);
-      await loadData();
+      await refreshCloset();
       setShareModal({ name: result.outfit.name, shareId: result.shareId });
     } catch (err) {
       setError(getErrorMessage(err, 'Failed to create share link'));
@@ -412,6 +408,9 @@ function ClosetPageContent() {
         )}
 
         {error && <p className="text-sm text-red-600 mt-4">{error}</p>}
+        {(itemsQuery.error || outfitsQuery.error) && !error && (
+          <p className="text-sm text-red-600 mt-4">Failed to load closet</p>
+        )}
       </div>
 
       {shareModal && (

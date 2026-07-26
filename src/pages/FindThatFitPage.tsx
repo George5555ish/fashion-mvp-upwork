@@ -1,30 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import MarketingLayout from '../components/MarketingLayout';
 import CuratedLooksGallery from '../components/CuratedLooksGallery';
+import { usePublishedCollections } from '../hooks/usePublishedCollections';
 import {
-  getPublishedCollections,
   type CuratedCollection,
   type CuratedLookSummary,
-  type PublishedCollectionsResponse,
 } from '../services/api';
 
 export default function FindThatFitPage() {
-  const [data, setData] = useState<PublishedCollectionsResponse | null>(null);
+  const { data, isLoading, error: queryError } = usePublishedCollections();
   const [activeCollectionId, setActiveCollectionId] = useState<string>('all');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    getPublishedCollections()
-      .then((response) => {
-        setData(response);
-        setError(null);
-      })
-      .catch(() => setError('Failed to load curated looks'))
-      .finally(() => setLoading(false));
-  }, []);
+  const error = queryError ? 'Failed to load curated looks' : null;
+  const loading = isLoading && !data;
 
   const allLooks: CuratedLookSummary[] = [
     ...(data?.collections.flatMap((collection) => collection.looks) || []),

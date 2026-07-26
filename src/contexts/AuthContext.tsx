@@ -15,6 +15,8 @@ import {
   type User,
 } from '../services/api';
 import { getStoredToken } from '../services/authStorage';
+import { queryClient } from '../lib/queryClient';
+import { queryKeys } from '../lib/queryKeys';
 
 interface AuthContextValue {
   user: User | null;
@@ -67,6 +69,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(() => {
     logoutRequest();
     setUser(null);
+    queryClient.removeQueries({ queryKey: ['closetItems'] });
+    queryClient.removeQueries({ queryKey: ['outfits'] });
+    queryClient.removeQueries({ queryKey: queryKeys.adminCollections() });
+    queryClient.removeQueries({ queryKey: queryKeys.adminLooks() });
   }, []);
 
   const value = useMemo(

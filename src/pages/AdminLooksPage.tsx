@@ -1,7 +1,9 @@
 import { FormEvent, useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { FolderPlus, Loader2, Plus, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
 import ProtectedRoute from '../components/ProtectedRoute';
+import { queryKeys } from '../lib/queryKeys';
 import {
   createAdminCollection,
   createAdminLook,
@@ -17,6 +19,7 @@ import {
 } from '../services/api';
 
 function AdminLooksPageContent() {
+  const queryClient = useQueryClient();
   const [collections, setCollections] = useState<CuratedCollectionSummary[]>([]);
   const [looks, setLooks] = useState<CuratedLook[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,6 +52,11 @@ function AdminLooksPageContent() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const refreshPublicLooks = async () => {
+    await loadData();
+    await queryClient.invalidateQueries({ queryKey: queryKeys.publishedCollections });
   };
 
   useEffect(() => {
@@ -92,7 +100,7 @@ function AdminLooksPageContent() {
       await createAdminCollection(name, collectionPublished);
       setCollectionName('');
       setCollectionPublished(true);
-      await loadData();
+      await refreshPublicLooks();
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create album');
@@ -104,7 +112,7 @@ function AdminLooksPageContent() {
   const toggleCollectionPublish = async (collection: CuratedCollectionSummary) => {
     try {
       await updateAdminCollection(collection.id, { published: !collection.published });
-      await loadData();
+      await refreshPublicLooks();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update album');
     }
@@ -118,7 +126,7 @@ function AdminLooksPageContent() {
       if (collectionId === collectionIdToDelete) {
         setCollectionId('');
       }
-      await loadData();
+      await refreshPublicLooks();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete album');
     }
@@ -139,7 +147,7 @@ function AdminLooksPageContent() {
       setCollectionId('');
       setImageFile(null);
       setLinks([{ label: '', url: '' }]);
-      await loadData();
+      await refreshPublicLooks();
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create look');
@@ -160,7 +168,7 @@ function AdminLooksPageContent() {
 
     try {
       await updateAdminLook(look.id, formData);
-      await loadData();
+      await refreshPublicLooks();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update look');
     }
@@ -178,7 +186,7 @@ function AdminLooksPageContent() {
 
     try {
       await updateAdminLook(look.id, formData);
-      await loadData();
+      await refreshPublicLooks();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to move look');
     }
@@ -189,7 +197,7 @@ function AdminLooksPageContent() {
 
     try {
       await deleteAdminLook(lookId);
-      await loadData();
+      await refreshPublicLooks();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete look');
     }
