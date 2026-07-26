@@ -1,42 +1,9 @@
-import { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import AnalyzerSection from '../components/landing/AnalyzerSection';
 import ImageUpload from '../components/ImageUpload';
 import FloatingBalls from '../components/FloatingBalls';
-import { uploadImage, pollAnalysis } from '../services/api';
-import { Loader2 } from 'lucide-react';
 
 export default function AnalyzePage() {
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<string>('');
-  const navigate = useNavigate();
-
-  const handleUpload = useCallback(async (file: File) => {
-    setIsUploading(true);
-    setUploadProgress('Uploading image...');
-
-    try {
-      const uploadResponse = await uploadImage(file);
-      setUploadProgress('Analyzing outfit with AI...');
-
-      await pollAnalysis(
-        uploadResponse.uploadId,
-        (status) => {
-          if (status === 'processing') {
-            setUploadProgress('Processing image... Please wait');
-          }
-        }
-      );
-
-      navigate(`/results/${uploadResponse.uploadId}`);
-    } catch (error) {
-      console.error('Upload/analysis error:', error);
-      setUploadProgress(`Error: ${error instanceof Error ? error.message : 'Failed to process image'}`);
-      setIsUploading(false);
-    }
-  }, [navigate]);
-
   return (
     <div className="min-h-screen bg-gray-50 relative overflow-hidden">
       <FloatingBalls />
@@ -47,13 +14,7 @@ export default function AnalyzePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-center">
           <div className="lg:col-span-1 animate-fade-in-up">
             <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-white/20">
-              <ImageUpload onUpload={handleUpload} disabled={isUploading} />
-              {isUploading && (
-                <div className="mt-4 flex items-center justify-center space-x-2 text-gray-600">
-                  <Loader2 className="animate-spin h-5 w-5" />
-                  <span className="text-sm">{uploadProgress}</span>
-                </div>
-              )}
+              <ImageUpload onUpload={() => {}} disabled comingSoon />
             </div>
           </div>
 
@@ -67,21 +28,22 @@ export default function AnalyzePage() {
                   FIND
                 </h2>
               </div>
-              
-              <p className="text-gray-600 mb-6 max-w-md mx-auto lg:mx-0 animate-fade-in-up animation-delay-200">
+
+              <p className="text-gray-600 mb-4 max-w-md mx-auto lg:mx-0 animate-fade-in-up animation-delay-200">
                 Upload an outfit photo and our AI will detect each piece, then suggest
                 similar styles and affordable dupes you can shop right away.
               </p>
 
+              <p className="text-brand font-display italic text-lg mb-6 animate-fade-in-up animation-delay-300">
+                Coming soon
+              </p>
+
               <button
-                onClick={() => {
-                  const input = document.querySelector('input[type="file"]') as HTMLInputElement | null;
-                  input?.click();
-                }}
-                disabled={isUploading}
-                className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed animate-fade-in-up animation-delay-400 hover:scale-105 transition-transform duration-300"
+                type="button"
+                disabled
+                className="btn-primary opacity-50 cursor-not-allowed animate-fade-in-up animation-delay-400"
               >
-                Upload Outfit
+                Upload Outfit — Coming soon
               </button>
             </div>
           </div>

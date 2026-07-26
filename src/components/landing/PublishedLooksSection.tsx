@@ -4,9 +4,9 @@ import CuratedLooksGallery from '../CuratedLooksGallery';
 import { usePublishedCollections } from '../../hooks/usePublishedCollections';
 
 export default function PublishedLooksSection() {
-  const { data, isLoading } = usePublishedCollections();
+  const { data, isPending } = usePublishedCollections();
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-10">
         <div className="max-w-7xl mx-auto flex justify-center py-12">

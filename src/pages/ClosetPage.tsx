@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Loader2, Plus, Share2, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
-import DigitalClosetSection from '../components/landing/DigitalClosetSection';
+// import DigitalClosetSection from '../components/landing/DigitalClosetSection';
 import EditClosetItemModal from '../components/EditClosetItemModal';
 import OutfitBuilderCanvas from '../components/OutfitBuilderCanvas';
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -226,7 +226,7 @@ function ClosetPageContent() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <DigitalClosetSection showCta={false} />
+      {/* <DigitalClosetSection showCta={false} /> */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-wrap gap-2 mb-8">
           {[

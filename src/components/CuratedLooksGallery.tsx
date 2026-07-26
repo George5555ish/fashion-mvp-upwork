@@ -15,7 +15,7 @@ export default function CuratedLooksGallery({
   const [selectedLookId, setSelectedLookId] = useState<string | null>(null);
   const lookQuery = usePublishedLook(selectedLookId);
   const selectedLook = lookQuery.data ?? null;
-  const detailLoading = Boolean(selectedLookId) && lookQuery.isLoading && !lookQuery.data;
+  const detailLoading = Boolean(selectedLookId) && lookQuery.isPending;
 
   if (looks.length === 0) {
     return <p className="text-sm text-gray-500 text-center py-8">{emptyMessage}</p>;

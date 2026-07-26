@@ -42,7 +42,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
         }`}
       >
         <div className="flex items-center justify-between px-6 pt-6 pb-4">
-          <BrandLogo heightClass="h-16" />
+          <BrandLogo variant="white" heightClass="h-16" />
           <button
             type="button"
             onClick={onClose}

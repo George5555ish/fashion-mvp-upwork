@@ -10,11 +10,11 @@ import {
 } from '../services/api';
 
 export default function FindThatFitPage() {
-  const { data, isLoading, error: queryError } = usePublishedCollections();
+  const { data, isPending, error: queryError } = usePublishedCollections();
   const [activeCollectionId, setActiveCollectionId] = useState<string>('all');
 
   const error = queryError ? 'Failed to load curated looks' : null;
-  const loading = isLoading && !data;
+  const loading = isPending;
 
   const allLooks: CuratedLookSummary[] = [
     ...(data?.collections.flatMap((collection) => collection.looks) || []),
