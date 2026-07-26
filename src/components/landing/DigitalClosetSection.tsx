@@ -35,7 +35,7 @@ export default function DigitalClosetSection({ showCta = true }: DigitalClosetSe
           {showCta && (
             <Link
               to="/closet"
-              className="mt-8 sm:mt-10 inline-flex items-center gap-3 rounded-full bg-gray-900 text-white px-8 py-4 text-sm font-semibold tracking-wide hover:bg-gray-800 transition-colors"
+              className="btn-landing-cta mt-8 sm:mt-10"
             >
               OPEN YOUR CLOSET
               <ArrowRight size={18} />

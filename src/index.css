@@ -64,6 +64,10 @@
   .feature-headline {
     @apply font-display italic font-medium text-2xl sm:text-[1.85rem] lg:text-[2rem] tracking-[0.1em] leading-relaxed;
   }
+
+  .btn-landing-cta {
+    @apply inline-flex items-center gap-3 rounded-full bg-brand text-white px-8 py-4 text-sm font-semibold tracking-wide hover:bg-brand-dark transition-colors;
+  }
 }
 
 @layer utilities {

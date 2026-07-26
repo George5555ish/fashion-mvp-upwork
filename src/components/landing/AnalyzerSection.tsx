@@ -44,7 +44,7 @@ export default function AnalyzerSection({ showCta = true, plainBackground = fals
           {showCta && (
             <Link
               to="/app"
-              className="mt-8 sm:mt-10 inline-flex items-center gap-3 rounded-full bg-gray-900 text-white px-8 py-4 text-sm font-semibold tracking-wide hover:bg-gray-800 transition-colors"
+              className="btn-landing-cta mt-8 sm:mt-10"
             >
               TRY THE ANALYZER
               <ArrowRight size={18} />
