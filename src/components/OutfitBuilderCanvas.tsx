@@ -6,16 +6,21 @@ const DRAG_TYPE = 'outfind/closet-item';
 
 interface OutfitBuilderCanvasProps {
   items: ClosetItem[];
+  paletteItems?: ClosetItem[];
   canvasItemIds: string[];
   onCanvasChange: (itemIds: string[]) => void;
+  onEditItem?: (item: ClosetItem) => void;
 }
 
 export default function OutfitBuilderCanvas({
   items,
+  paletteItems,
   canvasItemIds,
   onCanvasChange,
+  onEditItem,
 }: OutfitBuilderCanvasProps) {
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const closetItems = paletteItems ?? items;
 
   const canvasItems = canvasItemIds
     .map((id) => items.find((item) => item.id === id))
@@ -134,7 +139,7 @@ export default function OutfitBuilderCanvas({
       <div>
         <h2 className="text-sm font-medium text-gray-700 mb-3">Your closet</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {items.map((item) => {
+          {closetItems.map((item) => {
             const onCanvas = canvasItemIds.includes(item.id);
             return (
               <div
@@ -156,6 +161,19 @@ export default function OutfitBuilderCanvas({
                 <div className="p-3">
                   <p className="text-sm font-medium text-gray-900">{item.name}</p>
                   <p className="text-xs text-gray-500 capitalize">{item.category}</p>
+                  {onEditItem && (
+                    <button
+                      type="button"
+                      onPointerDown={(event) => event.stopPropagation()}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onEditItem(item);
+                      }}
+                      className="mt-2 text-xs text-gray-700 hover:underline"
+                    >
+                      Edit
+                    </button>
+                  )}
                 </div>
               </div>
             );

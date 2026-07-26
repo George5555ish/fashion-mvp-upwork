@@ -377,6 +377,13 @@ export async function deleteClosetItem(itemId: string): Promise<void> {
   await api.delete(`/closet/items/${itemId}`);
 }
 
+export async function updateClosetItem(itemId: string, formData: FormData): Promise<ClosetItem> {
+  const response = await api.patch<{ item: ClosetItem }>(`/closet/items/${itemId}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return response.data.item;
+}
+
 export async function getOutfits(): Promise<Outfit[]> {
   const response = await api.get<{ outfits: Outfit[] }>('/closet/outfits');
   return response.data.outfits;

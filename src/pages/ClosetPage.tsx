@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Loader2, Plus, Share2, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
+import EditClosetItemModal from '../components/EditClosetItemModal';
 import OutfitBuilderCanvas from '../components/OutfitBuilderCanvas';
 import ProtectedRoute from '../components/ProtectedRoute';
 import ShareOutfitModal from '../components/ShareOutfitModal';
@@ -14,30 +15,56 @@ import {
   deleteClosetItem,
   deleteOutfit,
   shareOutfit,
+  type ClosetItem,
   type Outfit,
 } from '../services/api';
 import { getErrorMessage } from '../utils/errors';
+import { CLOSET_CATEGORIES, CATEGORY_LABELS } from '../constants/closetCategories';
 
-const CLOSET_CATEGORIES = [
-  'top', 'shirt', 'jacket', 'coat', 'pants', 'jeans', 'dress',
-  'skirt', 'shoes', 'sneakers', 'boots', 'accessories', 'bag',
-];
+const CLOSET_CATEGORY_LIST = [...CLOSET_CATEGORIES];
 
-const CATEGORY_LABELS: Record<string, string> = {
-  top: 'Tops',
-  shirt: 'Shirts',
-  jacket: 'Jackets',
-  coat: 'Coats',
-  pants: 'Pants',
-  jeans: 'Jeans',
-  dress: 'Dresses',
-  skirt: 'Skirts',
-  shoes: 'Shoes',
-  sneakers: 'Sneakers',
-  boots: 'Boots',
-  accessories: 'Accessories',
-  bag: 'Bags',
-};
+function CategoryFilterBar({
+  activeCategory,
+  onCategoryChange,
+  items,
+  categoryTabs,
+}: {
+  activeCategory: string;
+  onCategoryChange: (category: string) => void;
+  items: { category: string }[];
+  categoryTabs: { category: string; count: number }[];
+}) {
+  return (
+    <div className="flex flex-wrap gap-2" aria-label="Filter closet by category">
+      <button
+        type="button"
+        onClick={() => onCategoryChange('all')}
+        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+          activeCategory === 'all'
+            ? 'bg-gray-900 text-white'
+            : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-100'
+        }`}
+      >
+        All <span className="opacity-70">({items.length})</span>
+      </button>
+      {categoryTabs.map(({ category: itemCategory, count }) => (
+        <button
+          key={itemCategory}
+          type="button"
+          onClick={() => onCategoryChange(itemCategory)}
+          className={`px-4 py-2 rounded-full text-sm font-medium capitalize transition-colors ${
+            activeCategory === itemCategory
+              ? 'bg-gray-900 text-white'
+              : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-100'
+          }`}
+        >
+          {CATEGORY_LABELS[itemCategory] || itemCategory}{' '}
+          <span className="opacity-70">({count})</span>
+        </button>
+      ))}
+    </div>
+  );
+}
 
 function ClosetPageContent() {
   const { user } = useAuth();
@@ -65,6 +92,7 @@ function ClosetPageContent() {
 
   const [shareModal, setShareModal] = useState<{ name: string; shareId: string } | null>(null);
   const [sharingOutfitId, setSharingOutfitId] = useState<string | null>(null);
+  const [editingItem, setEditingItem] = useState<ClosetItem | null>(null);
 
   const categoryTabs = useMemo(() => {
     const counts = new Map<string, number>();
@@ -73,7 +101,7 @@ function ClosetPageContent() {
       counts.set(item.category, (counts.get(item.category) || 0) + 1);
     });
 
-    return CLOSET_CATEGORIES
+    return CLOSET_CATEGORY_LIST
       .filter((itemCategory) => counts.has(itemCategory))
       .map((itemCategory) => ({
         category: itemCategory,
@@ -240,7 +268,7 @@ function ClosetPageContent() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
                     <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2">
-                      {CLOSET_CATEGORIES.map((option) => (
+                      {CLOSET_CATEGORY_LIST.map((option) => (
                         <option key={option} value={option}>{CATEGORY_LABELS[option]}</option>
                       ))}
                     </select>
@@ -267,34 +295,12 @@ function ClosetPageContent() {
                   </div>
                 ) : (
                   <div className="space-y-5">
-                    <div className="flex flex-wrap gap-2" aria-label="Filter closet by category">
-                      <button
-                        type="button"
-                        onClick={() => setActiveCategory('all')}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                          activeCategory === 'all'
-                            ? 'bg-gray-900 text-white'
-                            : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-100'
-                        }`}
-                      >
-                        All <span className="opacity-70">({items.length})</span>
-                      </button>
-                      {categoryTabs.map(({ category: itemCategory, count }) => (
-                        <button
-                          key={itemCategory}
-                          type="button"
-                          onClick={() => setActiveCategory(itemCategory)}
-                          className={`px-4 py-2 rounded-full text-sm font-medium capitalize transition-colors ${
-                            activeCategory === itemCategory
-                              ? 'bg-gray-900 text-white'
-                              : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-100'
-                          }`}
-                        >
-                          {CATEGORY_LABELS[itemCategory] || itemCategory}{' '}
-                          <span className="opacity-70">({count})</span>
-                        </button>
-                      ))}
-                    </div>
+                    <CategoryFilterBar
+                      activeCategory={activeCategory}
+                      onCategoryChange={setActiveCategory}
+                      items={items}
+                      categoryTabs={categoryTabs}
+                    />
 
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                       {visibleItems.map((item) => (
@@ -307,13 +313,22 @@ function ClosetPageContent() {
                           <div className="p-3">
                             <h3 className="font-medium text-gray-900 text-sm">{item.name}</h3>
                             <p className="text-xs text-gray-500 capitalize mt-1">{item.color} {item.category}</p>
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteItem(item.id)}
-                              className="mt-3 text-xs text-red-600 hover:underline"
-                            >
-                              Remove
-                            </button>
+                            <div className="mt-3 flex items-center gap-3">
+                              <button
+                                type="button"
+                                onClick={() => setEditingItem(item)}
+                                className="text-xs text-gray-700 hover:underline"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteItem(item.id)}
+                                className="text-xs text-red-600 hover:underline"
+                              >
+                                Remove
+                              </button>
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -343,11 +358,28 @@ function ClosetPageContent() {
                     Add closet items first, then drag them into the builder.
                   </div>
                 ) : (
-                  <OutfitBuilderCanvas
-                    items={items}
-                    canvasItemIds={canvasItemIds}
-                    onCanvasChange={setCanvasItemIds}
-                  />
+                  <div className="space-y-6">
+                    <CategoryFilterBar
+                      activeCategory={activeCategory}
+                      onCategoryChange={setActiveCategory}
+                      items={items}
+                      categoryTabs={categoryTabs}
+                    />
+
+                    {visibleItems.length === 0 ? (
+                      <div className="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-500">
+                        No items in this category yet.
+                      </div>
+                    ) : (
+                      <OutfitBuilderCanvas
+                        items={items}
+                        paletteItems={visibleItems}
+                        canvasItemIds={canvasItemIds}
+                        onCanvasChange={setCanvasItemIds}
+                        onEditItem={setEditingItem}
+                      />
+                    )}
+                  </div>
                 )}
               </div>
             )}
@@ -418,6 +450,14 @@ function ClosetPageContent() {
           outfitName={shareModal.name}
           shareId={shareModal.shareId}
           onClose={() => setShareModal(null)}
+        />
+      )}
+
+      {editingItem && (
+        <EditClosetItemModal
+          item={editingItem}
+          onClose={() => setEditingItem(null)}
+          onSaved={refreshCloset}
         />
       )}
     </div>
