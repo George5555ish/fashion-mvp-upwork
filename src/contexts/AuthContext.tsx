@@ -71,6 +71,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     queryClient.removeQueries({ queryKey: ['closetItems'] });
     queryClient.removeQueries({ queryKey: ['outfits'] });
+    queryClient.removeQueries({ queryKey: ['albums'] });
+    queryClient.removeQueries({ queryKey: ['album'] });
     queryClient.removeQueries({ queryKey: queryKeys.adminCollections() });
     queryClient.removeQueries({ queryKey: queryKeys.adminLooks() });
   }, []);

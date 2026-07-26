@@ -1,32 +1,28 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { FolderPlus, Loader2, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
 import ProtectedRoute from '../components/ProtectedRoute';
-import { createAlbum, deleteAlbum, getAlbums, type AlbumSummary } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
+import { useAlbums } from '../hooks/useAlbums';
+import { queryKeys } from '../lib/queryKeys';
+import { createAlbum, deleteAlbum } from '../services/api';
 
 function AlbumsPageContent() {
-  const [albums, setAlbums] = useState<AlbumSummary[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const albumsQuery = useAlbums();
+  const albums = albumsQuery.data ?? [];
+  const loading = albumsQuery.isLoading && !albumsQuery.data;
+
   const [error, setError] = useState<string | null>(null);
   const [newAlbumName, setNewAlbumName] = useState('');
   const [creating, setCreating] = useState(false);
 
-  const loadAlbums = async () => {
-    try {
-      setLoading(true);
-      setAlbums(await getAlbums());
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load albums');
-    } finally {
-      setLoading(false);
-    }
+  const refreshAlbums = () => {
+    queryClient.invalidateQueries({ queryKey: queryKeys.albums(user?.id) });
   };
-
-  useEffect(() => {
-    loadAlbums();
-  }, []);
 
   const handleCreate = async (event: FormEvent) => {
     event.preventDefault();
@@ -37,7 +33,8 @@ function AlbumsPageContent() {
       setCreating(true);
       await createAlbum(name);
       setNewAlbumName('');
-      await loadAlbums();
+      refreshAlbums();
+      setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create album');
     } finally {
@@ -50,7 +47,8 @@ function AlbumsPageContent() {
 
     try {
       await deleteAlbum(albumId);
-      await loadAlbums();
+      refreshAlbums();
+      setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete album');
     }
@@ -111,6 +109,9 @@ function AlbumsPageContent() {
         )}
 
         {error && <p className="text-sm text-red-600 mt-4">{error}</p>}
+        {albumsQuery.error && !error && (
+          <p className="text-sm text-red-600 mt-4">Failed to load albums</p>
+        )}
       </div>
     </div>
   );

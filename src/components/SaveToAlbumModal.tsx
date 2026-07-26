@@ -1,6 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Loader2, Plus, X } from 'lucide-react';
-import { createAlbum, getAlbums, addProductToAlbum, type AlbumSummary } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
+import { useAlbums } from '../hooks/useAlbums';
+import { queryKeys } from '../lib/queryKeys';
+import { createAlbum, addProductToAlbum } from '../services/api';
 
 interface SaveToAlbumModalProps {
   productId: string;
@@ -21,20 +25,21 @@ export default function SaveToAlbumModal({
   onClose,
   onSaved,
 }: SaveToAlbumModalProps) {
-  const [albums, setAlbums] = useState<AlbumSummary[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const albumsQuery = useAlbums();
+  const albums = albumsQuery.data ?? [];
+  const loading = albumsQuery.isLoading && !albumsQuery.data;
+
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [newAlbumName, setNewAlbumName] = useState('');
   const [creating, setCreating] = useState(false);
 
-  useEffect(() => {
-    getAlbums()
-      .then(setAlbums)
-      .catch(() => setError('Failed to load albums'))
-      .finally(() => setLoading(false));
-  }, []);
+  const refreshAlbums = () => {
+    queryClient.invalidateQueries({ queryKey: queryKeys.albums(user?.id) });
+  };
 
   const handleSave = async (albumId: string, albumName: string) => {
     try {
@@ -46,6 +51,7 @@ export default function SaveToAlbumModal({
         detectedCategory,
         detectedColor,
       });
+      refreshAlbums();
       setSuccess(`Saved to "${albumName}"`);
       onSaved?.();
       setTimeout(onClose, 900);
@@ -67,7 +73,7 @@ export default function SaveToAlbumModal({
       setCreating(true);
       setError(null);
       const album = await createAlbum(name);
-      setAlbums((current) => [album, ...current]);
+      refreshAlbums();
       setNewAlbumName('');
       await handleSave(album.id, album.name);
     } catch (err) {
@@ -141,6 +147,9 @@ export default function SaveToAlbumModal({
           )}
 
           {error && <p className="text-sm text-red-600">{error}</p>}
+          {albumsQuery.error && !error && (
+            <p className="text-sm text-red-600">Failed to load albums</p>
+          )}
           {success && <p className="text-sm text-green-600">{success}</p>}
         </div>
       </div>

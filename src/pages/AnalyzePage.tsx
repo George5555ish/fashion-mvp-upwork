@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import AnalyzerSection from '../components/landing/AnalyzerSection';
 import ImageUpload from '../components/ImageUpload';
 import FloatingBalls from '../components/FloatingBalls';
 import { uploadImage, pollAnalysis } from '../services/api';
@@ -40,7 +41,8 @@ export default function AnalyzePage() {
     <div className="min-h-screen bg-gray-50 relative overflow-hidden">
       <FloatingBalls />
       <Header />
-      
+      <AnalyzerSection showCta={false} plainBackground />
+
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-24 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-center">
           <div className="lg:col-span-1 animate-fade-in-up">

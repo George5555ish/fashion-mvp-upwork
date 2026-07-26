@@ -1,16 +1,16 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { FolderPlus, Loader2, Plus, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
 import ProtectedRoute from '../components/ProtectedRoute';
+import { useAuth } from '../contexts/AuthContext';
+import { useAdminCollections, useAdminLooks } from '../hooks/useAdminData';
 import { queryKeys } from '../lib/queryKeys';
 import {
   createAdminCollection,
   createAdminLook,
   deleteAdminCollection,
   deleteAdminLook,
-  getAdminCollections,
-  getAdminLooks,
   updateAdminCollection,
   updateAdminLook,
   type AffiliateLink,
@@ -19,10 +19,16 @@ import {
 } from '../services/api';
 
 function AdminLooksPageContent() {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [collections, setCollections] = useState<CuratedCollectionSummary[]>([]);
-  const [looks, setLooks] = useState<CuratedLook[]>([]);
-  const [loading, setLoading] = useState(true);
+  const collectionsQuery = useAdminCollections();
+  const looksQuery = useAdminLooks();
+  const collections = collectionsQuery.data ?? [];
+  const looks = looksQuery.data ?? [];
+  const loading = (collectionsQuery.isLoading || looksQuery.isLoading)
+    && !collectionsQuery.data
+    && !looksQuery.data;
+
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,31 +43,13 @@ function AdminLooksPageContent() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [links, setLinks] = useState<AffiliateLink[]>([{ label: '', url: '' }]);
 
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      const [nextCollections, nextLooks] = await Promise.all([
-        getAdminCollections(),
-        getAdminLooks(),
-      ]);
-      setCollections(nextCollections);
-      setLooks(nextLooks);
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load admin data');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const refreshPublicLooks = async () => {
-    await loadData();
-    await queryClient.invalidateQueries({ queryKey: queryKeys.publishedCollections });
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: queryKeys.adminCollections(user?.id) }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.adminLooks(user?.id) }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.publishedCollections }),
+    ]);
   };
-
-  useEffect(() => {
-    loadData();
-  }, []);
 
   const buildLookFormData = (overrides?: {
     title?: string;

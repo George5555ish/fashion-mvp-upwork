@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Loader2, Plus, Share2, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
+import DigitalClosetSection from '../components/landing/DigitalClosetSection';
 import EditClosetItemModal from '../components/EditClosetItemModal';
 import OutfitBuilderCanvas from '../components/OutfitBuilderCanvas';
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -225,14 +226,8 @@ function ClosetPageContent() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+      <DigitalClosetSection showCta={false} />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Cher&apos;s Closet</h1>
-          <p className="text-gray-600">
-            Upload your wardrobe, drag pieces together to build outfits, and share looks with friends.
-          </p>
-        </div>
-
         <div className="flex flex-wrap gap-2 mb-8">
           {[
             { id: 'items', label: 'My Closet' },

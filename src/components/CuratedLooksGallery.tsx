@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ExternalLink, Loader2 } from 'lucide-react';
-import { getPublishedLook, type CuratedLook, type CuratedLookSummary } from '../services/api';
+import { usePublishedLook } from '../hooks/usePublishedLook';
+import type { CuratedLookSummary } from '../services/api';
 
 interface CuratedLooksGalleryProps {
   looks: CuratedLookSummary[];
@@ -11,19 +12,10 @@ export default function CuratedLooksGallery({
   looks,
   emptyMessage = 'No looks in this album yet.',
 }: CuratedLooksGalleryProps) {
-  const [selectedLook, setSelectedLook] = useState<CuratedLook | null>(null);
-  const [detailLoading, setDetailLoading] = useState(false);
-
-  const openLook = async (lookId: string) => {
-    try {
-      setDetailLoading(true);
-      setSelectedLook(await getPublishedLook(lookId));
-    } catch {
-      setSelectedLook(null);
-    } finally {
-      setDetailLoading(false);
-    }
-  };
+  const [selectedLookId, setSelectedLookId] = useState<string | null>(null);
+  const lookQuery = usePublishedLook(selectedLookId);
+  const selectedLook = lookQuery.data ?? null;
+  const detailLoading = Boolean(selectedLookId) && lookQuery.isLoading && !lookQuery.data;
 
   if (looks.length === 0) {
     return <p className="text-sm text-gray-500 text-center py-8">{emptyMessage}</p>;
@@ -36,7 +28,7 @@ export default function CuratedLooksGallery({
           <button
             key={look.id}
             type="button"
-            onClick={() => openLook(look.id)}
+            onClick={() => setSelectedLookId(look.id)}
             className="text-left neuro-surface overflow-hidden group hover:shadow-lg transition-shadow"
           >
             <div className="aspect-[3/4] overflow-hidden bg-surface-dark">
@@ -61,7 +53,7 @@ export default function CuratedLooksGallery({
         ))}
       </div>
 
-      {(selectedLook || detailLoading) && (
+      {(selectedLookId || detailLoading) && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-xl">
             {detailLoading || !selectedLook ? (
@@ -100,7 +92,7 @@ export default function CuratedLooksGallery({
                   )}
                   <button
                     type="button"
-                    onClick={() => setSelectedLook(null)}
+                    onClick={() => setSelectedLookId(null)}
                     className="mt-6 w-full sm:w-auto bg-surface-dark hover:bg-surface text-gray-800 font-medium py-3 px-6 rounded-xl transition-colors"
                   >
                     Close

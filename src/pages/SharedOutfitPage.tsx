@@ -1,27 +1,18 @@
-import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Loader2, Shirt } from 'lucide-react';
 import MarketingLayout from '../components/MarketingLayout';
-import { getSharedOutfit, type SharedOutfit } from '../services/api';
+import { useSharedOutfit } from '../hooks/useSharedOutfit';
 
 export default function SharedOutfitPage() {
   const { shareId } = useParams<{ shareId: string }>();
-  const [outfit, setOutfit] = useState<SharedOutfit | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!shareId) {
-      setError('Invalid share link');
-      setLoading(false);
-      return;
-    }
-
-    getSharedOutfit(shareId)
-      .then(setOutfit)
-      .catch(() => setError('This outfit link is invalid or no longer available'))
-      .finally(() => setLoading(false));
-  }, [shareId]);
+  const outfitQuery = useSharedOutfit(shareId);
+  const outfit = outfitQuery.data ?? null;
+  const loading = outfitQuery.isLoading && !outfitQuery.data;
+  const error = !shareId
+    ? 'Invalid share link'
+    : outfitQuery.error
+      ? 'This outfit link is invalid or no longer available'
+      : null;
 
   return (
     <MarketingLayout>

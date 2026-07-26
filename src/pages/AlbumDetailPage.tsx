@@ -1,40 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, ExternalLink, Loader2, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
 import ProtectedRoute from '../components/ProtectedRoute';
-import { getAlbum, removeAlbumItem, type AlbumDetail } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
+import { useAlbum } from '../hooks/useAlbums';
+import { queryKeys } from '../lib/queryKeys';
+import { removeAlbumItem } from '../services/api';
 
 function AlbumDetailPageContent() {
   const { albumId } = useParams<{ albumId: string }>();
-  const [album, setAlbum] = useState<AlbumDetail | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const albumQuery = useAlbum(albumId);
+  const album = albumQuery.data ?? null;
+  const loading = albumQuery.isLoading && !albumQuery.data;
+
   const [error, setError] = useState<string | null>(null);
 
-  const loadAlbum = async () => {
-    if (!albumId) return;
-
-    try {
-      setLoading(true);
-      setAlbum(await getAlbum(albumId));
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load album');
-    } finally {
-      setLoading(false);
-    }
+  const refreshAlbum = () => {
+    queryClient.invalidateQueries({ queryKey: queryKeys.album(user?.id, albumId!) });
+    queryClient.invalidateQueries({ queryKey: queryKeys.albums(user?.id) });
   };
-
-  useEffect(() => {
-    loadAlbum();
-  }, [albumId]);
 
   const handleRemove = async (itemId: string) => {
     if (!albumId) return;
 
     try {
       await removeAlbumItem(albumId, itemId);
-      await loadAlbum();
+      refreshAlbum();
+      setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to remove item');
     }
@@ -107,6 +103,9 @@ function AlbumDetailPageContent() {
         ) : null}
 
         {error && <p className="text-sm text-red-600 mt-4">{error}</p>}
+        {albumQuery.error && !error && (
+          <p className="text-sm text-red-600 mt-4">Failed to load album</p>
+        )}
       </div>
     </div>
   );
