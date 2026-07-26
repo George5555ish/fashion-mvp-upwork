@@ -1,6 +1,3 @@
-import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-
 interface AnalyzerSectionProps {
   showCta?: boolean;
   plainBackground?: boolean;
@@ -29,8 +26,8 @@ export default function AnalyzerSection({ showCta = true, plainBackground = fals
             The Analyzer
           </h2>
 
-          <p className="feature-headline mt-3 sm:mt-4 text-brand">
-            The look you want. The price you&apos;ll love.
+          <p className="feature-headline mt-3 sm:mt-4">
+            Coming soon
           </p>
 
           <hr className="my-6 sm:my-8 border-gray-300 max-w-md" />
@@ -42,13 +39,13 @@ export default function AnalyzerSection({ showCta = true, plainBackground = fals
           </p>
 
           {showCta && (
-            <Link
-              to="/app"
-              className="btn-landing-cta mt-8 sm:mt-10"
+            <button
+              type="button"
+              disabled
+              className="btn-landing-cta mt-8 sm:mt-10 opacity-60 cursor-not-allowed"
             >
-              TRY THE ANALYZER
-              <ArrowRight size={18} />
-            </Link>
+              Coming soon
+            </button>
           )}
         </div>
       </div>

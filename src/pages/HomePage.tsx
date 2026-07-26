@@ -127,7 +127,7 @@ export default function HomePage() {
               FindThatFit
             </h2>
 
-            <p className="feature-headline mt-3 sm:mt-4 text-sky-dark">
+            <p className="feature-headline mt-3 sm:mt-4">
               Inspiration, made shoppable.
             </p>
 

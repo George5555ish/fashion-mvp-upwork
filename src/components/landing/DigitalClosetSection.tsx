@@ -18,7 +18,7 @@ export default function DigitalClosetSection({ showCta = true }: DigitalClosetSe
             Digital Closet
           </h2>
 
-          <p className="feature-headline mt-3 sm:mt-4 text-sky-dark">
+          <p className="feature-headline mt-3 sm:mt-4">
             Chaos out. Style in.
           </p>
 
