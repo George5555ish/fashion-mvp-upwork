@@ -77,8 +77,8 @@ export default function LandingFooter() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
           <div className="lg:col-span-2">
-            <div className="mb-4">
-              <BrandLogo variant="white" />
+            <div className="mb-4 inline-block rounded-2xl glass-white px-4 py-3">
+              <BrandLogo />
             </div>
             <p className="text-sm text-gray-400 max-w-sm mb-6 leading-relaxed">
               {siteConfig.description}

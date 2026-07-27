@@ -21,6 +21,14 @@
     @apply backdrop-blur-xl bg-white/25 border border-white/35 shadow-glass;
   }
 
+  .glass-white {
+    @apply backdrop-blur-xl bg-white/65 border border-white/55 shadow-glass;
+  }
+
+  .glass-menu {
+    @apply backdrop-blur-2xl bg-black/30 border border-white/25 shadow-glass;
+  }
+
   .glass-dark {
     @apply backdrop-blur-xl bg-black/20 border border-white/10;
   }
