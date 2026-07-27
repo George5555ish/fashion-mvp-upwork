@@ -44,20 +44,20 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
           open ? 'translate-y-0' : '-translate-y-4'
         }`}
       >
-        <div className="glass-menu rounded-3xl flex flex-col h-full overflow-hidden">
-          <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-white/15">
-            <div className="rounded-2xl glass-white px-3 py-2">
-              <BrandLogo heightClass="h-14" />
-            </div>
+        <div className="rounded-3xl flex flex-col h-full overflow-hidden border border-white/25 shadow-glass">
+          <div className="glass-white flex items-center justify-between px-5 py-4 rounded-t-3xl shrink-0">
+            <BrandLogo heightClass="h-16" />
             <button
               type="button"
               onClick={onClose}
-              className="w-11 h-11 rounded-full border border-white/30 bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+              className="w-11 h-11 rounded-full border border-white/60 bg-white/40 flex items-center justify-center text-gray-800 hover:bg-white/60 transition-colors"
               aria-label="Close menu"
             >
               <X size={22} />
             </button>
           </div>
+
+          <div className="glass-menu flex flex-col flex-1 min-h-0 rounded-b-3xl">
 
           <nav className="flex-1 flex flex-col justify-center px-6 sm:px-10 gap-1 overflow-y-auto">
             {navItems.map((link) => (
@@ -120,6 +120,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
               Try OutFind
               <ArrowRight size={20} className="text-white" />
             </Link>
+          </div>
           </div>
         </div>
       </div>
