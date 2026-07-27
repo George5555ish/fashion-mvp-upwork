@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Camera } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import LandingHeader from '../components/landing/LandingHeader';
 import LandingFooter from '../components/landing/LandingFooter';
 import DigitalClosetSection from '../components/landing/DigitalClosetSection';
@@ -81,24 +81,7 @@ export default function HomePage() {
           <p className="mt-4 sm:mt-6 text-sm sm:text-base lg:text-lg text-white/90 leading-relaxed drop-shadow max-w-md">
             Find outfits, discover dupes, organize your wardrobe, and shop every look—all in one place.
           </p>
-          <Link
-            to="/app"
-            className="mt-6 sm:mt-8 inline-flex items-center gap-2 glass-pill-dark px-6 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg font-medium hover:bg-black/70 transition-colors"
-          >
-            Try OutFind
-            <ArrowRight size={20} />
-          </Link>
         </div>
-
-        <Link
-          to="/app"
-          className="absolute right-6 sm:right-12 lg:right-20 bottom-28 sm:bottom-36 z-20 glass rounded-full w-32 h-32 sm:w-36 sm:h-36 flex flex-col items-center justify-center text-center gap-2 hover:bg-white/40 transition-all group"
-        >
-          <Camera size={24} className="text-white group-hover:scale-110 transition-transform" />
-          <span className="text-sm sm:text-base font-medium text-white leading-tight px-3">
-            Find This Look
-          </span>
-        </Link>
       </section>
 
       {/* Feature sections with floating glass cards */}

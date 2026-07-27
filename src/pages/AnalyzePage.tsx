@@ -14,7 +14,7 @@ export default function AnalyzePage() {
           Coming soon
         </p>
         <p className="mt-4 text-gray-600 max-w-md text-base sm:text-lg leading-relaxed">
-          The outfit analyzer isn&apos;t ready yet. We&apos;re fixing it for the next milestone—check back soon.
+          The outfit analyzer isn&apos;t ready yet — check back soon.
         </p>
       </section>
     </div>
