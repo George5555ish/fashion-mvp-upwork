@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { FolderPlus, Loader2, Plus, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
+import EditCuratedLookModal from '../components/EditCuratedLookModal';
 import ProtectedRoute from '../components/ProtectedRoute';
 import { useAuth } from '../contexts/AuthContext';
 import { useAdminCollections, useAdminLooks } from '../hooks/useAdminData';
@@ -42,6 +43,7 @@ function AdminLooksPageContent() {
   const [collectionId, setCollectionId] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [links, setLinks] = useState<AffiliateLink[]>([{ label: '', url: '' }]);
+  const [editingLook, setEditingLook] = useState<CuratedLook | null>(null);
 
   const refreshPublicLooks = async () => {
     await Promise.all([
@@ -393,14 +395,23 @@ function AdminLooksPageContent() {
                         {look.collectionName ? ` · ${look.collectionName}` : ' · No album'}
                       </p>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteLook(look.id)}
-                      className="text-gray-400 hover:text-red-600"
-                      aria-label="Delete look"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setEditingLook(look)}
+                        className="text-sm text-gray-700 hover:underline"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteLook(look.id)}
+                        className="text-gray-400 hover:text-red-600"
+                        aria-label="Delete look"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                   </div>
 
                   <div>
@@ -433,6 +444,15 @@ function AdminLooksPageContent() {
         )}
 
         {error && <p className="text-sm text-red-600 mt-4">{error}</p>}
+
+        {editingLook && (
+          <EditCuratedLookModal
+            look={editingLook}
+            collections={collections}
+            onClose={() => setEditingLook(null)}
+            onSaved={refreshPublicLooks}
+          />
+        )}
       </div>
     </div>
   );
