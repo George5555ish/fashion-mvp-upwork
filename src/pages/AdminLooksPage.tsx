@@ -18,6 +18,7 @@ import {
   type CuratedCollectionSummary,
   type CuratedLook,
 } from '../services/api';
+import { getAdminLookImageSrc } from '../utils/imageUrls';
 
 function AdminLooksPageContent() {
   const { user } = useAuth();
@@ -382,8 +383,9 @@ function AdminLooksPageContent() {
             {looks.map((look) => (
               <div key={look.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <img
-                  src={`data:${look.imageMimeType};base64,${look.imageBase64}`}
+                  src={getAdminLookImageSrc(look)}
                   alt={look.title}
+                  loading="lazy"
                   className="w-full aspect-[3/4] object-cover"
                 />
                 <div className="p-4 space-y-4">

@@ -20,6 +20,7 @@ import {
   type Outfit,
 } from '../services/api';
 import { getErrorMessage } from '../utils/errors';
+import { getClosetItemImageSrc } from '../utils/imageUrls';
 import { CLOSET_CATEGORIES, CATEGORY_LABELS } from '../constants/closetCategories';
 
 const CLOSET_CATEGORY_LIST = [...CLOSET_CATEGORIES];
@@ -301,7 +302,7 @@ function ClosetPageContent() {
                       {visibleItems.map((item) => (
                         <div key={item.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                           <img
-                            src={`data:${item.imageMimeType};base64,${item.imageBase64}`}
+                            src={getClosetItemImageSrc(item)}
                             alt={item.name}
                             className="w-full aspect-square object-cover"
                           />
@@ -419,7 +420,7 @@ function ClosetPageContent() {
                         {outfit.items.map((item) => (
                           <div key={item.id} className="rounded-lg overflow-hidden border border-gray-200">
                             <img
-                              src={`data:${item.imageMimeType};base64,${item.imageBase64}`}
+                              src={getClosetItemImageSrc(item)}
                               alt={item.name}
                               className="w-full aspect-square object-cover"
                             />

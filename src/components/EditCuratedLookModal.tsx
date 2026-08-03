@@ -7,6 +7,7 @@ import {
   type CuratedLook,
 } from '../services/api';
 import { getErrorMessage } from '../utils/errors';
+import { getAdminLookImageSrc } from '../utils/imageUrls';
 
 interface EditCuratedLookModalProps {
   look: CuratedLook;
@@ -87,7 +88,7 @@ export default function EditCuratedLookModal({
               src={
                 imageFile
                   ? URL.createObjectURL(imageFile)
-                  : `data:${look.imageMimeType};base64,${look.imageBase64}`
+                  : getAdminLookImageSrc(look)
               }
               alt={look.title}
               className="w-28 h-36 rounded-lg object-cover border border-gray-200 shrink-0"

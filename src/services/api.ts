@@ -123,14 +123,13 @@ export interface CuratedLookSummary {
   caption: string;
   links: AffiliateLink[];
   imageMimeType: string;
-  imageBase64: string;
+  imageBase64?: string;
   collectionId?: string | null;
   collectionName?: string | null;
   createdAt: string;
 }
 
 export interface CuratedLook extends CuratedLookSummary {
-  imageBase64: string;
   published?: boolean;
   updatedAt?: string;
 }
@@ -159,7 +158,7 @@ export interface ClosetItem {
   category: string;
   color: string;
   imageMimeType: string;
-  imageBase64: string;
+  imageBase64?: string;
   createdAt: string;
 }
 

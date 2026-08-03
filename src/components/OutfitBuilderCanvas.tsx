@@ -1,6 +1,7 @@
 import { useState, type DragEvent } from 'react';
 import { X } from 'lucide-react';
 import type { ClosetItem } from '../services/api';
+import { getClosetItemImageSrc } from '../utils/imageUrls';
 
 const DRAG_TYPE = 'outfind/closet-item';
 
@@ -122,7 +123,7 @@ export default function OutfitBuilderCanvas({
                   <X size={14} />
                 </button>
                 <img
-                  src={`data:${item.imageMimeType};base64,${item.imageBase64}`}
+                  src={getClosetItemImageSrc(item)}
                   alt={item.name}
                   className="w-full aspect-square object-cover pointer-events-none"
                 />
@@ -154,7 +155,7 @@ export default function OutfitBuilderCanvas({
                 }`}
               >
                 <img
-                  src={`data:${item.imageMimeType};base64,${item.imageBase64}`}
+                  src={getClosetItemImageSrc(item)}
                   alt={item.name}
                   className="w-full aspect-square object-cover pointer-events-none"
                 />

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ExternalLink, Loader2 } from 'lucide-react';
 import { usePublishedLook } from '../hooks/usePublishedLook';
 import type { CuratedLookSummary } from '../services/api';
+import { getCuratedLookImageSrc } from '../utils/imageUrls';
 
 interface CuratedLooksGalleryProps {
   looks: CuratedLookSummary[];
@@ -33,8 +34,9 @@ export default function CuratedLooksGallery({
           >
             <div className="aspect-[3/4] overflow-hidden bg-surface-dark">
               <img
-                src={`data:${look.imageMimeType};base64,${look.imageBase64}`}
+                src={getCuratedLookImageSrc(look)}
                 alt={look.title}
+                loading="lazy"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
             </div>
@@ -63,7 +65,7 @@ export default function CuratedLooksGallery({
             ) : (
               <div>
                 <img
-                  src={`data:${selectedLook.imageMimeType};base64,${selectedLook.imageBase64}`}
+                  src={getCuratedLookImageSrc(selectedLook)}
                   alt={selectedLook.title}
                   className="w-full max-h-[60vh] object-contain bg-surface-light"
                 />

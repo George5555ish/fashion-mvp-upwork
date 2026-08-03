@@ -3,6 +3,7 @@ import { Loader2, X } from 'lucide-react';
 import { CLOSET_CATEGORIES, CATEGORY_LABELS } from '../constants/closetCategories';
 import { updateClosetItem, type ClosetItem } from '../services/api';
 import { getErrorMessage } from '../utils/errors';
+import { getClosetItemImageSrc } from '../utils/imageUrls';
 
 interface EditClosetItemModalProps {
   item: ClosetItem;
@@ -66,7 +67,7 @@ export default function EditClosetItemModal({ item, onClose, onSaved }: EditClos
               src={
                 imageFile
                   ? URL.createObjectURL(imageFile)
-                  : `data:${item.imageMimeType};base64,${item.imageBase64}`
+                  : getClosetItemImageSrc(item)
               }
               alt={item.name}
               className="w-24 h-24 rounded-lg object-cover border border-gray-200 shrink-0"

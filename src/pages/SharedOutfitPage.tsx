@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { Loader2, Shirt } from 'lucide-react';
 import MarketingLayout from '../components/MarketingLayout';
 import { useSharedOutfit } from '../hooks/useSharedOutfit';
+import { getSharedOutfitItemImageUrl } from '../utils/imageUrls';
 
 export default function SharedOutfitPage() {
   const { shareId } = useParams<{ shareId: string }>();
@@ -43,8 +44,9 @@ export default function SharedOutfitPage() {
                 {outfit.items.map((item) => (
                   <div key={item.id} className="rounded-lg overflow-hidden border border-gray-200">
                     <img
-                      src={`data:${item.imageMimeType};base64,${item.imageBase64}`}
+                      src={getSharedOutfitItemImageUrl(shareId!, item.id)}
                       alt={item.name}
+                      loading="lazy"
                       className="w-full aspect-square object-cover"
                     />
                     <div className="p-3">
