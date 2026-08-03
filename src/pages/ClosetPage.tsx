@@ -4,6 +4,7 @@ import { Loader2, Plus, Share2, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
 // import DigitalClosetSection from '../components/landing/DigitalClosetSection';
 import EditClosetItemModal from '../components/EditClosetItemModal';
+import LoadingImage from '../components/LoadingImage';
 import OutfitBuilderCanvas from '../components/OutfitBuilderCanvas';
 import ProtectedRoute from '../components/ProtectedRoute';
 import ShareOutfitModal from '../components/ShareOutfitModal';
@@ -301,10 +302,12 @@ function ClosetPageContent() {
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                       {visibleItems.map((item) => (
                         <div key={item.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                          <img
+                          <LoadingImage
                             src={getClosetItemImageSrc(item)}
                             alt={item.name}
-                            className="w-full aspect-square object-cover"
+                            loading="lazy"
+                            containerClassName="w-full aspect-square"
+                            className="w-full h-full object-cover"
                           />
                           <div className="p-3">
                             <h3 className="font-medium text-gray-900 text-sm">{item.name}</h3>
@@ -419,10 +422,12 @@ function ClosetPageContent() {
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                         {outfit.items.map((item) => (
                           <div key={item.id} className="rounded-lg overflow-hidden border border-gray-200">
-                            <img
+                            <LoadingImage
                               src={getClosetItemImageSrc(item)}
                               alt={item.name}
-                              className="w-full aspect-square object-cover"
+                              loading="lazy"
+                              containerClassName="w-full aspect-square"
+                              className="w-full h-full object-cover"
                             />
                           </div>
                         ))}

@@ -1,5 +1,6 @@
 import { useState, type DragEvent } from 'react';
 import { X } from 'lucide-react';
+import LoadingImage from './LoadingImage';
 import type { ClosetItem } from '../services/api';
 import { getClosetItemImageSrc } from '../utils/imageUrls';
 
@@ -122,10 +123,12 @@ export default function OutfitBuilderCanvas({
                 >
                   <X size={14} />
                 </button>
-                <img
+                <LoadingImage
                   src={getClosetItemImageSrc(item)}
                   alt={item.name}
-                  className="w-full aspect-square object-cover pointer-events-none"
+                  loading="lazy"
+                  containerClassName="w-full aspect-square"
+                  className="w-full h-full object-cover pointer-events-none"
                 />
                 <div className="p-2">
                   <p className="text-xs font-medium text-gray-900 line-clamp-1">{item.name}</p>
@@ -154,10 +157,12 @@ export default function OutfitBuilderCanvas({
                   onCanvas ? 'border-gray-900 opacity-70' : 'border-gray-200 bg-white hover:border-gray-400'
                 }`}
               >
-                <img
+                <LoadingImage
                   src={getClosetItemImageSrc(item)}
                   alt={item.name}
-                  className="w-full aspect-square object-cover pointer-events-none"
+                  loading="lazy"
+                  containerClassName="w-full aspect-square"
+                  className="w-full h-full object-cover pointer-events-none"
                 />
                 <div className="p-3">
                   <p className="text-sm font-medium text-gray-900">{item.name}</p>

@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, ExternalLink, Loader2, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
+import LoadingImage from '../components/LoadingImage';
 import ProtectedRoute from '../components/ProtectedRoute';
 import { useAuth } from '../contexts/AuthContext';
 import { useAlbum } from '../hooks/useAlbums';
@@ -62,10 +63,12 @@ function AlbumDetailPageContent() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {album.items.map((item) => (
                   <div key={item.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                    <img
+                    <LoadingImage
                       src={item.product.imageUrl}
                       alt={item.product.name}
-                      className="w-full aspect-square object-cover"
+                      loading="lazy"
+                      containerClassName="w-full aspect-square"
+                      className="w-full h-full object-cover"
                     />
                     <div className="p-4">
                       <h3 className="font-medium text-gray-900 line-clamp-2">{item.product.name}</h3>

@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { FolderPlus, Loader2, Plus, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
+import LoadingImage from '../components/LoadingImage';
 import EditCuratedLookModal from '../components/EditCuratedLookModal';
 import ProtectedRoute from '../components/ProtectedRoute';
 import { useAuth } from '../contexts/AuthContext';
@@ -382,11 +383,12 @@ function AdminLooksPageContent() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {looks.map((look) => (
               <div key={look.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                <img
+                <LoadingImage
                   src={getAdminLookImageSrc(look)}
                   alt={look.title}
                   loading="lazy"
-                  className="w-full aspect-[3/4] object-cover"
+                  containerClassName="w-full aspect-[3/4]"
+                  className="w-full h-full object-cover"
                 />
                 <div className="p-4 space-y-4">
                   <div className="flex items-start justify-between gap-3">

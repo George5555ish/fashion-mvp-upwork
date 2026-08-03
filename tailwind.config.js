@@ -42,6 +42,15 @@ export default {
         'glass-coral': '0 10px 28px rgba(248, 113, 113, 0.3), 0 2px 8px rgba(252, 165, 165, 0.15)',
         'glass-accent': '0 10px 28px rgba(6, 182, 212, 0.28), 0 2px 8px rgba(34, 211, 238, 0.14)',
       },
+      keyframes: {
+        shimmer: {
+          '0%': { backgroundPosition: '200% 0' },
+          '100%': { backgroundPosition: '-200% 0' },
+        },
+      },
+      animation: {
+        shimmer: 'shimmer 1.8s ease-in-out infinite',
+      },
     },
   },
   plugins: [],
