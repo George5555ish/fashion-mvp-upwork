@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import BrandLogo from './BrandLogo';
 import MobileMenu from './MobileMenu';
+import AccountNavLink from './AccountNavLink';
 import { useAuth } from '../contexts/AuthContext';
 import { getNavItems } from '../config/navigation';
 
@@ -37,9 +38,15 @@ export default function MarketingHeader() {
 
           <div className="flex items-center gap-2">
             {user ? (
-              <button type="button" onClick={logout} className="btn-secondary text-sm py-2 px-4 hidden md:inline-block">
-                Log out
-              </button>
+              <>
+                <AccountNavLink
+                  className="hidden md:inline-flex w-10 h-10 items-center justify-center rounded-full text-gray-700 hover:bg-gray-100 transition-colors"
+                  iconSize={22}
+                />
+                <button type="button" onClick={logout} className="btn-secondary text-sm py-2 px-4 hidden md:inline-block">
+                  Log out
+                </button>
+              </>
             ) : (
               <Link to="/login" className="btn-secondary text-sm py-2 px-4 hidden md:inline-block">
                 Log in

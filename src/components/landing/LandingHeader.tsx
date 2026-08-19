@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import BrandLogo from '../BrandLogo';
 import MobileMenu from '../MobileMenu';
+import AccountNavLink from '../AccountNavLink';
 import { useAuth } from '../../contexts/AuthContext';
 import { getNavItems } from '../../config/navigation';
 
@@ -27,9 +28,12 @@ export default function LandingHeader() {
               </Link>
             ))}
             {user ? (
-              <button type="button" onClick={logout} className={linkClassName}>
-                Log out
-              </button>
+              <>
+                <AccountNavLink className={`${linkClassName} inline-flex items-center`} iconSize={20} />
+                <button type="button" onClick={logout} className={linkClassName}>
+                  Log out
+                </button>
+              </>
             ) : (
               <Link to="/login" className={linkClassName}>
                 Log in

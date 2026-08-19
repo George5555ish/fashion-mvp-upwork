@@ -5,6 +5,9 @@ import { useAuth } from '../contexts/AuthContext';
 import { useAlbums } from '../hooks/useAlbums';
 import { queryKeys } from '../lib/queryKeys';
 import { createAlbum, addProductToAlbum } from '../services/api';
+import { ALBUM_LIMIT, isAtLimit } from '../constants/limits';
+import { getErrorMessage } from '../utils/errors';
+import UsageLimitIndicator from './UsageLimitIndicator';
 
 interface SaveToAlbumModalProps {
   productId: string;
@@ -28,7 +31,9 @@ export default function SaveToAlbumModal({
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const albumsQuery = useAlbums();
-  const albums = albumsQuery.data ?? [];
+  const albums = albumsQuery.data?.albums ?? [];
+  const albumLimits = albumsQuery.data?.limits ?? { current: albums.length, max: ALBUM_LIMIT };
+  const albumsAtLimit = isAtLimit(albumLimits);
   const loading = albumsQuery.isLoading && !albumsQuery.data;
 
   const [saving, setSaving] = useState(false);
@@ -56,7 +61,7 @@ export default function SaveToAlbumModal({
       onSaved?.();
       setTimeout(onClose, 900);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save product');
+      setError(getErrorMessage(err, 'Failed to save product'));
     } finally {
       setSaving(false);
     }
@@ -77,7 +82,7 @@ export default function SaveToAlbumModal({
       setNewAlbumName('');
       await handleSave(album.id, album.name);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create album');
+      setError(getErrorMessage(err, 'Failed to create album'));
     } finally {
       setCreating(false);
     }
@@ -103,6 +108,13 @@ export default function SaveToAlbumModal({
             </div>
           ) : (
             <>
+              <UsageLimitIndicator
+                label="Albums used"
+                limits={albumLimits}
+                unit="albums"
+                atLimitMessage="Album limit reached. Delete an album from the Albums page to create a new one."
+              />
+
               {albums.length > 0 ? (
                 <div className="space-y-2 max-h-48 overflow-y-auto">
                   {albums.map((album) => (
@@ -130,12 +142,13 @@ export default function SaveToAlbumModal({
                     value={newAlbumName}
                     onChange={(e) => setNewAlbumName(e.target.value)}
                     placeholder="e.g. Summer dresses"
-                    className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                    disabled={albumsAtLimit}
+                    className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 disabled:bg-gray-50 disabled:text-gray-400"
                   />
                   <button
                     type="button"
                     onClick={handleCreateAndSave}
-                    disabled={creating || saving}
+                    disabled={creating || saving || albumsAtLimit}
                     className="btn-primary px-3 py-2 flex items-center gap-1 text-sm disabled:opacity-60"
                   >
                     <Plus size={16} />

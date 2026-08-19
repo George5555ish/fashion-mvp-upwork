@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getNavItems } from '../config/navigation';
+import AccountNavLink from './AccountNavLink';
 
 export default function AppNav() {
   const { user, logout } = useAuth();
@@ -18,13 +19,16 @@ export default function AppNav() {
         </Link>
       ))}
       {user ? (
-        <button
-          type="button"
-          onClick={logout}
-          className="glassmorphic-nav text-sm font-medium text-gray-700 hover:text-gray-900 transition-all duration-300"
-        >
-          Log out
-        </button>
+        <>
+          <AccountNavLink className="glassmorphic-nav inline-flex items-center text-gray-700 hover:text-gray-900 transition-all duration-300" />
+          <button
+            type="button"
+            onClick={logout}
+            className="glassmorphic-nav text-sm font-medium text-gray-700 hover:text-gray-900 transition-all duration-300"
+          >
+            Log out
+          </button>
+        </>
       ) : (
         <Link to="/login" className="glassmorphic-nav text-sm font-medium text-gray-700 hover:text-gray-900 transition-all duration-300">
           Log in

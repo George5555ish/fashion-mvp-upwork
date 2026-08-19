@@ -5,6 +5,7 @@ import Header from '../components/Header';
 // import DigitalClosetSection from '../components/landing/DigitalClosetSection';
 import EditClosetItemModal from '../components/EditClosetItemModal';
 import LoadingImage from '../components/LoadingImage';
+import UsageLimitIndicator from '../components/UsageLimitIndicator';
 import OutfitBuilderCanvas from '../components/OutfitBuilderCanvas';
 import ProtectedRoute from '../components/ProtectedRoute';
 import ShareOutfitModal from '../components/ShareOutfitModal';
@@ -23,6 +24,7 @@ import {
 import { getErrorMessage } from '../utils/errors';
 import { getClosetItemImageSrc } from '../utils/imageUrls';
 import { CLOSET_CATEGORIES, CATEGORY_LABELS } from '../constants/closetCategories';
+import { CLOSET_ITEM_LIMIT, isAtLimit } from '../constants/limits';
 
 const CLOSET_CATEGORY_LIST = [...CLOSET_CATEGORIES];
 
@@ -75,7 +77,9 @@ function ClosetPageContent() {
   const itemsQuery = useClosetItems();
   const outfitsQuery = useOutfits();
 
-  const items = itemsQuery.data ?? [];
+  const items = itemsQuery.data?.items ?? [];
+  const itemLimits = itemsQuery.data?.limits ?? { current: items.length, max: CLOSET_ITEM_LIMIT };
+  const closetAtLimit = isAtLimit(itemLimits);
   const outfits = outfitsQuery.data ?? [];
   const loading = (itemsQuery.isLoading || outfitsQuery.isLoading) && !itemsQuery.data && !outfitsQuery.data;
 
@@ -257,14 +261,21 @@ function ClosetPageContent() {
           <>
             {activeTab === 'items' && (
               <div className="space-y-8">
+                <UsageLimitIndicator
+                  label="Closet items"
+                  limits={itemLimits}
+                  unit="items"
+                  atLimitMessage="Closet limit reached. Remove an item to add more."
+                />
+
                 <form onSubmit={handleAddItem} className="bg-white rounded-xl border border-gray-200 p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Item name</label>
-                    <input value={name} onChange={(e) => setName(e.target.value)} required className="w-full rounded-lg border border-gray-300 px-3 py-2" />
+                    <input value={name} onChange={(e) => setName(e.target.value)} required disabled={closetAtLimit} className="w-full rounded-lg border border-gray-300 px-3 py-2 disabled:bg-gray-50 disabled:text-gray-400" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                    <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2">
+                    <select value={category} onChange={(e) => setCategory(e.target.value)} disabled={closetAtLimit} className="w-full rounded-lg border border-gray-300 px-3 py-2 disabled:bg-gray-50 disabled:text-gray-400">
                       {CLOSET_CATEGORY_LIST.map((option) => (
                         <option key={option} value={option}>{CATEGORY_LABELS[option]}</option>
                       ))}
@@ -272,16 +283,16 @@ function ClosetPageContent() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Color</label>
-                    <input value={color} onChange={(e) => setColor(e.target.value)} className="w-full rounded-lg border border-gray-300 px-3 py-2" />
+                    <input value={color} onChange={(e) => setColor(e.target.value)} disabled={closetAtLimit} className="w-full rounded-lg border border-gray-300 px-3 py-2 disabled:bg-gray-50 disabled:text-gray-400" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Photo</label>
-                    <input type="file" accept="image/*" required onChange={(e) => setImageFile(e.target.files?.[0] || null)} className="w-full text-sm" />
+                    <input type="file" accept="image/*" required disabled={closetAtLimit} onChange={(e) => setImageFile(e.target.files?.[0] || null)} className="w-full text-sm disabled:opacity-50" />
                   </div>
                   <div className="md:col-span-2">
-                    <button type="submit" disabled={savingItem} className="btn-primary inline-flex items-center gap-2 disabled:opacity-60">
+                    <button type="submit" disabled={savingItem || closetAtLimit} className="btn-primary inline-flex items-center gap-2 disabled:opacity-60">
                       <Plus size={16} />
-                      {savingItem ? 'Adding...' : 'Add to Closet'}
+                      {savingItem ? 'Adding...' : closetAtLimit ? 'Closet full' : 'Add to Closet'}
                     </button>
                   </div>
                 </form>

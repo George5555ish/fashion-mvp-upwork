@@ -3,17 +3,22 @@ import { Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { FolderPlus, Loader2, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
+import UsageLimitIndicator from '../components/UsageLimitIndicator';
 import ProtectedRoute from '../components/ProtectedRoute';
 import { useAuth } from '../contexts/AuthContext';
 import { useAlbums } from '../hooks/useAlbums';
 import { queryKeys } from '../lib/queryKeys';
 import { createAlbum, deleteAlbum } from '../services/api';
+import { ALBUM_LIMIT, isAtLimit } from '../constants/limits';
+import { getErrorMessage } from '../utils/errors';
 
 function AlbumsPageContent() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const albumsQuery = useAlbums();
-  const albums = albumsQuery.data ?? [];
+  const albums = albumsQuery.data?.albums ?? [];
+  const albumLimits = albumsQuery.data?.limits ?? { current: albums.length, max: ALBUM_LIMIT };
+  const albumsAtLimit = isAtLimit(albumLimits);
   const loading = albumsQuery.isLoading && !albumsQuery.data;
 
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +41,7 @@ function AlbumsPageContent() {
       refreshAlbums();
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create album');
+      setError(getErrorMessage(err, 'Failed to create album'));
     } finally {
       setCreating(false);
     }
@@ -50,7 +55,7 @@ function AlbumsPageContent() {
       refreshAlbums();
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete album');
+      setError(getErrorMessage(err, 'Failed to delete album'));
     }
   };
 
@@ -58,9 +63,17 @@ function AlbumsPageContent() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Albums</h1>
-          <p className="text-gray-600">Organize saved products into custom collections.</p>
+        <div className="mb-8 space-y-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Albums</h1>
+            <p className="text-gray-600">Organize saved products into custom collections.</p>
+          </div>
+          <UsageLimitIndicator
+            label="Albums used"
+            limits={albumLimits}
+            unit="albums"
+            atLimitMessage="Album limit reached. Delete an album to create a new one."
+          />
         </div>
 
         <form onSubmit={handleCreate} className="bg-white rounded-xl border border-gray-200 p-5 mb-8 flex flex-col sm:flex-row gap-3">
@@ -69,9 +82,14 @@ function AlbumsPageContent() {
             value={newAlbumName}
             onChange={(e) => setNewAlbumName(e.target.value)}
             placeholder="New album name, e.g. Buy Later"
-            className="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+            disabled={albumsAtLimit}
+            className="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900 disabled:bg-gray-50 disabled:text-gray-400"
           />
-          <button type="submit" disabled={creating} className="btn-primary flex items-center justify-center gap-2 disabled:opacity-60">
+          <button
+            type="submit"
+            disabled={creating || albumsAtLimit}
+            className="btn-primary flex items-center justify-center gap-2 disabled:opacity-60"
+          >
             <FolderPlus size={18} />
             Create Album
           </button>

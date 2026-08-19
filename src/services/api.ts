@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { clearStoredToken, getStoredToken, setStoredToken } from './authStorage';
 import { getApiBaseUrl } from '../utils/apiBaseUrl';
+import type { UsageLimits } from '../constants/limits';
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -97,6 +98,16 @@ export interface AlbumItem {
 
 export interface AlbumDetail extends AlbumSummary {
   items: AlbumItem[];
+}
+
+export interface ClosetItemsResponse {
+  items: ClosetItem[];
+  limits: UsageLimits;
+}
+
+export interface AlbumsResponse {
+  albums: AlbumSummary[];
+  limits: UsageLimits;
 }
 
 export interface AffiliateLink {
@@ -236,9 +247,9 @@ export async function pollAnalysis(
   throw new Error('Analysis timeout - please try again');
 }
 
-export async function getAlbums(): Promise<AlbumSummary[]> {
-  const response = await api.get<{ albums: AlbumSummary[] }>('/albums');
-  return response.data.albums;
+export async function getAlbums(): Promise<AlbumsResponse> {
+  const response = await api.get<AlbumsResponse>('/albums');
+  return response.data;
 }
 
 export async function createAlbum(name: string): Promise<AlbumSummary> {
@@ -347,9 +358,9 @@ export async function deleteAdminCollection(collectionId: string): Promise<void>
   await api.delete(`/admin/collections/${collectionId}`);
 }
 
-export async function getClosetItems(): Promise<ClosetItem[]> {
-  const response = await api.get<{ items: ClosetItem[] }>('/closet/items');
-  return response.data.items;
+export async function getClosetItems(): Promise<ClosetItemsResponse> {
+  const response = await api.get<ClosetItemsResponse>('/closet/items');
+  return response.data;
 }
 
 export async function createClosetItem(formData: FormData): Promise<ClosetItem> {

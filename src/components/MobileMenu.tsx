@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, X } from 'lucide-react';
+import { ArrowRight, UserCircle, X } from 'lucide-react';
 import BrandLogo from './BrandLogo';
 import { useAuth } from '../contexts/AuthContext';
 import { getNavItems } from '../config/navigation';
@@ -78,22 +78,38 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
             ))}
 
             {user ? (
-              <button
-                type="button"
-                onClick={() => {
-                  logout();
-                  onClose();
-                }}
-                className={`${navLinkClassName} text-left`}
-              >
-                <span className="font-serif text-3xl sm:text-4xl text-white group-hover:text-white/90 transition-colors">
-                  Log out
-                </span>
-                <ArrowRight
-                  size={22}
-                  className="text-white group-hover:translate-x-1 transition-all"
-                />
-              </button>
+              <>
+                <Link
+                  to="/account"
+                  onClick={onClose}
+                  className={navLinkClassName}
+                >
+                  <span className="font-serif text-3xl sm:text-4xl text-white group-hover:text-white/90 transition-colors inline-flex items-center gap-3">
+                    <UserCircle size={24} aria-hidden="true" />
+                    Account
+                  </span>
+                  <ArrowRight
+                    size={22}
+                    className="text-white group-hover:translate-x-1 transition-all"
+                  />
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    onClose();
+                  }}
+                  className={`${navLinkClassName} text-left`}
+                >
+                  <span className="font-serif text-3xl sm:text-4xl text-white group-hover:text-white/90 transition-colors">
+                    Log out
+                  </span>
+                  <ArrowRight
+                    size={22}
+                    className="text-white group-hover:translate-x-1 transition-all"
+                  />
+                </button>
+              </>
             ) : (
               <Link
                 to="/login"

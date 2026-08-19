@@ -18,6 +18,7 @@ import FindThatFitPage from './pages/FindThatFitPage';
 import AdminLooksPage from './pages/AdminLooksPage';
 import ClosetPage from './pages/ClosetPage';
 import SharedOutfitPage from './pages/SharedOutfitPage';
+import AccountPage from './pages/AccountPage';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           <Route path="/albums" element={<AlbumsPage />} />
           <Route path="/albums/:albumId" element={<AlbumDetailPage />} />
           <Route path="/closet" element={<ClosetPage />} />
+          <Route path="/account" element={<AccountPage />} />
           <Route path="/share/outfit/:shareId" element={<SharedOutfitPage />} />
           <Route path="/admin/looks" element={<AdminLooksPage />} />
         </Routes>
