@@ -1,19 +1,6 @@
 import axios from 'axios';
 import { clearStoredToken, getStoredToken, setStoredToken } from './authStorage';
-
-const getApiBaseUrl = () => {
-  const envUrl = import.meta.env.VITE_API_URL;
-
-  if (envUrl) {
-    return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
-  }
-
-  if (import.meta.env.DEV) {
-    return '/api';
-  }
-
-  return '/api';
-};
+import { getApiBaseUrl } from '../utils/apiBaseUrl';
 
 const API_BASE_URL = getApiBaseUrl();
 

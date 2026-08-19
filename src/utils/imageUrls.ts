@@ -1,14 +1,5 @@
 import { getStoredToken } from '../services/authStorage';
-
-function getImageApiBase(): string {
-  const envUrl = import.meta.env.VITE_API_URL;
-
-  if (envUrl) {
-    return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
-  }
-
-  return '/api';
-}
+import { getApiBaseUrl } from './apiBaseUrl';
 
 function withAccessToken(url: string): string {
   const token = getStoredToken();
@@ -21,19 +12,19 @@ function withAccessToken(url: string): string {
 }
 
 export function getClosetItemImageUrl(itemId: string): string {
-  return withAccessToken(`${getImageApiBase()}/closet/items/${itemId}/image`);
+  return withAccessToken(`${getApiBaseUrl()}/closet/items/${itemId}/image`);
 }
 
 export function getCuratedLookImageUrl(lookId: string): string {
-  return `${getImageApiBase()}/looks/${lookId}/image`;
+  return `${getApiBaseUrl()}/looks/${lookId}/image`;
 }
 
 export function getAdminLookImageUrl(lookId: string): string {
-  return withAccessToken(`${getImageApiBase()}/admin/looks/${lookId}/image`);
+  return withAccessToken(`${getApiBaseUrl()}/admin/looks/${lookId}/image`);
 }
 
 export function getSharedOutfitItemImageUrl(shareId: string, itemId: string): string {
-  return `${getImageApiBase()}/share/outfits/${shareId}/items/${itemId}/image`;
+  return `${getApiBaseUrl()}/share/outfits/${shareId}/items/${itemId}/image`;
 }
 
 interface ImageSource {
