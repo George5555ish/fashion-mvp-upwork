@@ -374,6 +374,62 @@ export async function getAdminDashboard(): Promise<AdminDashboardResponse> {
   return response.data;
 }
 
+export interface AdminUserDetailClosetItem {
+  id: string;
+  name: string;
+  category: string;
+  color: string;
+  imageMimeType: string;
+  createdAt: string;
+}
+
+export interface AdminUserDetailAlbumItem {
+  id: string;
+  notes: string;
+  detectedCategory: string;
+  detectedColor: string;
+  savedAt: string;
+  product: {
+    id: string;
+    name: string;
+    price: number;
+    imageUrl: string;
+    shopUrl: string;
+  } | null;
+}
+
+export interface AdminUserDetailAlbum {
+  id: string;
+  name: string;
+  itemCount: number;
+  createdAt: string;
+  updatedAt: string;
+  items: AdminUserDetailAlbumItem[];
+}
+
+export interface AdminUserDetailOutfit {
+  id: string;
+  name: string;
+  isShared: boolean;
+  shareId: string | null;
+  sharedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  items: AdminUserDetailClosetItem[];
+}
+
+export interface AdminUserDetailResponse {
+  user: AdminDashboardUser & { updatedAt?: string };
+  closetItems: AdminUserDetailClosetItem[];
+  albums: AdminUserDetailAlbum[];
+  outfits: AdminUserDetailOutfit[];
+}
+
+export async function getAdminUserDetail(userId: string): Promise<AdminUserDetailResponse> {
+  const response = await api.get<AdminUserDetailResponse>(`/admin/users/${userId}`);
+  return response.data;
+}
+
 export async function createAdminLook(formData: FormData): Promise<CuratedLook> {
   const response = await api.post<{ look: CuratedLook }>('/admin/looks', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },

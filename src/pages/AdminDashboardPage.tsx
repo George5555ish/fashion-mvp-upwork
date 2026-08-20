@@ -8,9 +8,11 @@ import {
   Users,
 } from 'lucide-react';
 import AdminSubNav from '../components/AdminSubNav';
+import AdminUserDetailModal from '../components/AdminUserDetailModal';
 import Header from '../components/Header';
 import ProtectedRoute from '../components/ProtectedRoute';
 import { useAdminDashboard } from '../hooks/useAdminDashboard';
+import type { AdminDashboardUser } from '../services/api';
 
 function formatDate(value: string): string {
   return new Date(value).toLocaleDateString(undefined, {
@@ -91,6 +93,7 @@ type DashboardTab = 'users' | 'closet' | 'albums';
 function AdminDashboardPageContent() {
   const dashboardQuery = useAdminDashboard();
   const [activeTab, setActiveTab] = useState<DashboardTab>('users');
+  const [selectedUser, setSelectedUser] = useState<AdminDashboardUser | null>(null);
   const data = dashboardQuery.data;
 
   const tabs = useMemo(() => ([
@@ -180,7 +183,11 @@ function AdminDashboardPageContent() {
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                       {data.users.map((user) => (
-                        <tr key={user.id} className="hover:bg-gray-50">
+                        <tr
+                          key={user.id}
+                          className="hover:bg-gray-50 cursor-pointer"
+                          onClick={() => setSelectedUser(user)}
+                        >
                           <td className="px-6 py-4">
                             <div className="font-medium text-gray-900">{user.name || 'No name'}</div>
                             <div className="text-gray-500">{user.email}</div>
@@ -258,6 +265,13 @@ function AdminDashboardPageContent() {
 
         {dashboardQuery.error && (
           <p className="text-sm text-red-600 mt-4">Failed to load admin dashboard</p>
+        )}
+
+        {selectedUser && (
+          <AdminUserDetailModal
+            user={selectedUser}
+            onClose={() => setSelectedUser(null)}
+          />
         )}
       </div>
     </div>

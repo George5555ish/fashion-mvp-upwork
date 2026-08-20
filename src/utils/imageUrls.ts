@@ -23,6 +23,10 @@ export function getAdminLookImageUrl(lookId: string): string {
   return withAccessToken(`${getApiBaseUrl()}/admin/looks/${lookId}/image`);
 }
 
+export function getAdminClosetItemImageUrl(itemId: string): string {
+  return withAccessToken(`${getApiBaseUrl()}/admin/closet-items/${itemId}/image`);
+}
+
 export function getSharedOutfitItemImageUrl(shareId: string, itemId: string): string {
   return `${getApiBaseUrl()}/share/outfits/${shareId}/items/${itemId}/image`;
 }

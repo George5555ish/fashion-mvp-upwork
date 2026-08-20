@@ -10,4 +10,5 @@ export const queryKeys = {
   adminCollections: (userId?: string) => ['adminCollections', userId] as const,
   adminLooks: (userId?: string) => ['adminLooks', userId] as const,
   adminDashboard: (userId?: string) => ['adminDashboard', userId] as const,
+  adminUserDetail: (userId: string) => ['adminUserDetail', userId] as const,
 };

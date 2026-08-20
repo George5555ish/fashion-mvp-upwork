@@ -77,6 +77,15 @@ function AccountPageContent() {
               <FolderOpen size={18} className="text-brand" />
               <span className="font-medium text-gray-900">My Albums</span>
             </Link>
+            {user.role === 'admin' && (
+              <Link
+                to="/admin/dashboard"
+                className="sm:col-span-2 flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-3 hover:border-gray-900 hover:bg-gray-50 transition-colors"
+              >
+                <User size={18} className="text-brand" />
+                <span className="font-medium text-gray-900">Admin Dashboard</span>
+              </Link>
+            )}
           </div>
 
           <div className="p-6">

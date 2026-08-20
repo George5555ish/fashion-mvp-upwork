@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './contexts/AuthContext';
 import { queryClient } from './lib/queryClient';
@@ -43,6 +43,7 @@ function App() {
           <Route path="/closet" element={<ClosetPage />} />
           <Route path="/account" element={<AccountPage />} />
           <Route path="/share/outfit/:shareId" element={<SharedOutfitPage />} />
+          <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
           <Route path="/admin/looks" element={<AdminLooksPage />} />
         </Routes>
