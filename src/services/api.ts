@@ -309,6 +309,71 @@ export async function getAdminLooks(): Promise<CuratedLook[]> {
   return response.data.looks;
 }
 
+export interface AdminUserRef {
+  id: string;
+  email: string;
+  name: string;
+}
+
+export interface AdminDashboardSummary {
+  totalUsers: number;
+  newUsersLast7Days: number;
+  newUsersLast30Days: number;
+  signupFrequencyPerDay: number;
+  totalClosetItems: number;
+  totalAlbums: number;
+  totalOutfits: number;
+  totalCuratedLooks: number;
+  totalSavedProducts: number;
+  avgClosetItemsPerUser: number;
+}
+
+export interface AdminSignupDay {
+  date: string;
+  count: number;
+}
+
+export interface AdminDashboardUser extends AdminUserRef {
+  role: 'user' | 'admin';
+  createdAt: string;
+  closetItemCount: number;
+  albumCount: number;
+  savedProductCount: number;
+  outfitCount: number;
+}
+
+export interface AdminDashboardClosetItem {
+  id: string;
+  name: string;
+  category: string;
+  color: string;
+  imageMimeType: string;
+  createdAt: string;
+  user: AdminUserRef | null;
+}
+
+export interface AdminDashboardAlbum {
+  id: string;
+  name: string;
+  itemCount: number;
+  createdAt: string;
+  updatedAt: string;
+  user: AdminUserRef | null;
+}
+
+export interface AdminDashboardResponse {
+  summary: AdminDashboardSummary;
+  signupsByDay: AdminSignupDay[];
+  users: AdminDashboardUser[];
+  closetItems: AdminDashboardClosetItem[];
+  albums: AdminDashboardAlbum[];
+}
+
+export async function getAdminDashboard(): Promise<AdminDashboardResponse> {
+  const response = await api.get<AdminDashboardResponse>('/admin/dashboard');
+  return response.data;
+}
+
 export async function createAdminLook(formData: FormData): Promise<CuratedLook> {
   const response = await api.post<{ look: CuratedLook }>('/admin/looks', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },

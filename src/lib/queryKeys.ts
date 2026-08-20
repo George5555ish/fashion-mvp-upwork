@@ -9,4 +9,5 @@ export const queryKeys = {
   sharedOutfit: (shareId: string) => ['sharedOutfit', shareId] as const,
   adminCollections: (userId?: string) => ['adminCollections', userId] as const,
   adminLooks: (userId?: string) => ['adminLooks', userId] as const,
+  adminDashboard: (userId?: string) => ['adminDashboard', userId] as const,
 };

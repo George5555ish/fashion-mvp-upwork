@@ -20,7 +20,8 @@ export function getNavItems(user: User | null): NavItem[] {
   ];
 
   if (user?.role === 'admin') {
-    items.push({ to: '/admin/looks', label: 'Admin' });
+    items.push({ to: '/admin/dashboard', label: 'Dashboard' });
+    items.push({ to: '/admin/looks', label: 'Curated Looks' });
   }
 
   return items;

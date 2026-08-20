@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { FolderPlus, Loader2, Plus, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
 import LoadingImage from '../components/LoadingImage';
+import AdminSubNav from '../components/AdminSubNav';
 import EditCuratedLookModal from '../components/EditCuratedLookModal';
 import ProtectedRoute from '../components/ProtectedRoute';
 import { useAuth } from '../contexts/AuthContext';
@@ -199,6 +200,7 @@ function AdminLooksPageContent() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <AdminSubNav />
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin: Curated Looks</h1>
         <p className="text-gray-600 mb-8">
           Create fit albums like &quot;Restaurant Fits&quot;, then upload looks into each album.

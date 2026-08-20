@@ -16,6 +16,7 @@ import AlbumsPage from './pages/AlbumsPage';
 import AlbumDetailPage from './pages/AlbumDetailPage';
 import FindThatFitPage from './pages/FindThatFitPage';
 import AdminLooksPage from './pages/AdminLooksPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
 import ClosetPage from './pages/ClosetPage';
 import SharedOutfitPage from './pages/SharedOutfitPage';
 import AccountPage from './pages/AccountPage';
@@ -42,6 +43,7 @@ function App() {
           <Route path="/closet" element={<ClosetPage />} />
           <Route path="/account" element={<AccountPage />} />
           <Route path="/share/outfit/:shareId" element={<SharedOutfitPage />} />
+          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
           <Route path="/admin/looks" element={<AdminLooksPage />} />
         </Routes>
       </BrowserRouter>

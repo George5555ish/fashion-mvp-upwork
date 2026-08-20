@@ -75,6 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryClient.removeQueries({ queryKey: ['album'] });
     queryClient.removeQueries({ queryKey: queryKeys.adminCollections() });
     queryClient.removeQueries({ queryKey: queryKeys.adminLooks() });
+    queryClient.removeQueries({ queryKey: queryKeys.adminDashboard() });
   }, []);
 
   const value = useMemo(
