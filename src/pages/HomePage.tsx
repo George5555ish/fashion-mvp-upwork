@@ -10,12 +10,19 @@ import FloatingGlassCards from '../components/landing/FloatingGlassCards';
 
 const heroSlides = [
   {
-    src: '/hero-casual.png',
-    alt: 'Casual street style at night',
+    src: '/hero-high-fashion.jpg',
+    alt: "I'd rather get high fashion collage",
+    position: 'object-center',
   },
   {
-    src: '/hero-evening.png',
-    alt: 'Formal evening dresses with embellished clutches',
+    src: '/hero-closet-search.jpg',
+    alt: 'Woman searching her wardrobe for an outfit',
+    position: 'object-[center_35%]',
+  },
+  {
+    src: '/hero-closet-choose.jpg',
+    alt: 'Woman choosing clothes from a walk-in closet',
+    position: 'object-[center_30%]',
   },
 ];
 
@@ -42,7 +49,7 @@ export default function HomePage() {
             key={slide.src}
             src={slide.src}
             alt={slide.alt}
-            className={`absolute inset-0 w-full h-full object-cover object-[center_70%] transition-opacity duration-1000 ease-in-out ${
+            className={`absolute inset-0 w-full h-full object-cover ${slide.position} transition-opacity duration-1000 ease-in-out ${
               index === activeSlide ? 'opacity-100' : 'opacity-0'
             }`}
           />
